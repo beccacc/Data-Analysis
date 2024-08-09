@@ -3,6 +3,9 @@ import os
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
+from statsmodels.multivariate.manova import MANOVA
+from sklearn import linear_model as lm
+
 # sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 # from ChooseVariables import ChooseVariables
 
@@ -12,34 +15,30 @@ class PerformOperation:
         self.indVar = chooseVariables.getIndVar()
         self.depVar = chooseVariables.getDepVar()
         self.operation = operation.getOperation()
-        self.data = chooseVariables.getData()
-        if(self.operation == "Two-tail T-Test" or self.operation == "One-tail T-Test"):
+        self.data = chooseVariables.getDataSet()
+        if(self.operation == "Two-tail T-Test" or self.operation == "One-tail T-Test" or
+            self.operation == "ANOVA" or self.operation == "MANOVA"):
             self.confidence = operation.getConfidence()
 
     def performOperation(self):
         if(self.operation == "Multiple Regression"):
-            #TODO:
             self.multiReg()
         elif(self.operation == "Simple Regression"):
-            #TODO:
             self.simpleReg()
         elif(self.operation == "Logistic Regression"):
-            #TODO:
             self.logReg()
         elif(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
             self.TTest()
         elif(self.operation == "ANOVA"):
-            #TODO:
             self.ANOVA()
         elif(self.operation == "MANOVA"):
             #TODO:
             self.MANOVA()
         else:
-            #TODO:
             self.correlation()
         
     def TTest(self):
-        independent = self.data.lo[:,self.indVar]
+        independent = self.data.loc[:,self.indVar]
         dependent = self.data.loc[:, self.depVar]
         indVariance = np.var(independent)
         depVariance = np.var(dependent)
@@ -61,9 +60,90 @@ class PerformOperation:
 
 
 
+    def ANOVA(self):
+        independent = self.data.loc[:, self.indVar]
+        dependents = pd.DataFrame(self.data.loc[:, self.depVar[0]])
+        for i in range(len(self.depVar)):
+            if(i!=0):
+                data = pd.DataFrame(self.data.loc[:, self.depVar[i]])
+                dependents = dependents.join(data, how = "inner")
+        overallMean = np.mean(dependents)
+        SSB=0
+        SSE = 0
+        sampleSize = 0
+        for dep in self.depVar:
+            depData = self.data.loc[:, dep]
+            size = len(depData)
+            sampleSize = sampleSize + size
+            sampleMean = np.mean(depData)
+            SSB = SSB + size*(sampleMean-overallMean)^2
+            for val in depData:
+                SSE = SSE + (val - sampleMean)^2
+        # SST = SSB + SSE
+        df1 = len(self.depVar) - 1
+        df2 = sampleSize - len(self.depVar)
+        MSB = SSB/df1
+        MSE = SSE/df2
+        fVal = MSB/MSE
+        fCrit = stats.f.ppf(self.confidence, df1, df2)
+        if(fVal>fCrit):
+            print("reject null: significant difference")
+        else:
+            print("do not reject null: no significant difference")
 
+    # def MANOVA(self):
+    #     independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
+    #     for i in range(len(self.indVar)):
+    #         if(i!=0):
+    #             data = pd.DataFrame(self.data.loc[:, self.indVar[i]])
+    #             independents = independents.join(data, how = "inner")
+    #     dependents = pd.DataFrame(self.data.loc[:, self.depVar[0]])
+    #     for i in range(len(self.depVar)):
+    #         if(i!=0):
+    #             data = pd.DataFrame(self.data.loc[:, self.depVar[i]])
+    #             dependents = dependents.join(data, how = "inner")
+    #     manova = MANOVA(endog=independents, exog=dependents).fit()
+    #     result = manova.mv_test()
 
+    def logReg(self):
+        independent = self.data.loc[:,self.indVar]
+        dependent = self.data.loc[:, self.depVar]
+        logr = lm.LogisticRegression()
+        logr.fit(independent, dependent)
+        pVal = np.exp(logr.coef_)
+        print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
 
+    def simpleReg(self):
+        independent = self.data.loc[:,self.indVar]
+        dependent = self.data.loc[:, self.depVar]
+        simpleR = lm.LinearRegression()
+        simpleR.fit(independent, dependent)
+        pVal = simpleR.coef_
+        print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
+            
+    def multiReg(self):
+        independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
+        for i in range(len(self.indVar)):
+            if(i!=0):
+                data = pd.DataFrame(self.data.loc[:, self.indVar[i]])
+                independents = independents.join(data, how = "inner")
+        dependent = self.data.loc[:, self.depVar]
+        multiR = lm.LinearRegression()
+        multiR.fit(independents, dependent)
+        pVals = multiR.coef_
+        outputString = ""
+        for i in range(len(self.indVar)):
+            outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
+        print(outputString)
 
-        
-
+    def correlation(self):
+        independent = self.data.loc[:,self.indVar]
+        dependent = self.data.loc[:, self.depVar]
+        if(len(independent) > len(dependent)):
+            extra = len(independent) - len(dependent)
+            independent.drop(independent.tail(extra).index, inplace = True)
+        else:
+            extra = len(dependent) - len(independent)
+            dependent.drop(dependent.tail(extra).index, inplace = True)
+        corr = stats.pearsonr(independent, dependent).statistic
+        print("The Pearson correlation coefficient for " + independent + " and " + dependent + " is " + str(corr))

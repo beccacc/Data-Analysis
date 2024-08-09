@@ -14,12 +14,9 @@ from SelectFiles import SelectFiles
 
 class ChooseVariables:
     def __init__(self, selectFiles, operations):
-        fileList = list(selectFiles.getSelection())
-        # print(fileList)
-        # print(type(fileList))
-        self.data = self.getData(fileList)
-        # print(self.data)
-        self.varList = self.getVarList(self.data)
+        self.fileList = list(selectFiles.getSelection())
+        self.data = self.getData()
+        self.varList = self.getVarList()
         # print(self.varList)
         self.operation = operations.getOperation()
         print("operation: " + self.operation)
@@ -49,22 +46,17 @@ class ChooseVariables:
         self.root.mainloop()
 
 
-    def getData(self, fileList):
-        data = pd.read_csv(fileList[0][1])
-        for i in range(len(fileList)):
+    def getData(self):
+        data = pd.read_csv(self.fileList[0][1])
+        for i in range(len(self.fileList)):
             if(i!=0):
-                filePath = fileList[i][1]
-                # print("*********FILE PATH: " + filePath)
+                filePath = self.fileList[i][1]
                 fileData = pd.read_csv(filePath)
-                # print(fileData)
                 data = data.join(fileData, how="inner")
-            # print(type(data))
-            # print(data)
-            # data.add(pd.DataFrame(pd.read_csv(filePath)))
         return data
     
-    def getVarList(self, data):
-        return data.columns
+    def getVarList(self):
+        return self.data.columns
         
 
     def getConfidence(self):
@@ -144,7 +136,7 @@ class ChooseVariables:
             self.Correlation()
     
     def setInd(self, i):
-        if(self.operation == "Multiple Regression"):
+        if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
             self.indVars.append(i)
             tk.Button(self.left, text="Complete Selection", command=lambda : self.completeSelection("ind")).grid(row=len(self.indVarOptions), column=0, sticky=W, pady=2)
             for button in self.left.winfo_children():
@@ -163,7 +155,7 @@ class ChooseVariables:
         
     
     def setDep(self, d):
-        if(self.operation == "MANOVA"):
+        if(self.operation == "MANOVA" or self.operation == "ANOVA"):
             self.depVars.append(d)
             tk.Button(self.right, text="Complete Selection", command=lambda : self.completeSelection("dep")).grid(row=len(self.depVarOptions), column=0, sticky=W, pady=2)
             for button in self.right.winfo_children():
@@ -205,14 +197,14 @@ class ChooseVariables:
         self.root.destroy()
 
     def getIndVar(self):
-        if(self.operation == "Multiple Regression"):
+        if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
             return self.indVars
         return self.indVar
     
     def getDepVar(self):
-        if(self.operation == "MANOVA"):
+        if(self.operation == "MANOVA" or self.operation == "ANOVA"):
             return self.depVars
         return self.depVar
 
-    def getData(self):
+    def getDataset(self):
         return self.data
