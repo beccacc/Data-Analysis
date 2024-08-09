@@ -213,3 +213,6 @@ class ChooseVariables:
         if(self.operation == "MANOVA"):
             return self.depVars
         return self.depVar
+
+    def getData(self):
+        return self.data

@@ -18,18 +18,24 @@ class PerformOperation:
 
     def performOperation(self):
         if(self.operation == "Multiple Regression"):
+            #TODO:
             self.multiReg()
         elif(self.operation == "Simple Regression"):
+            #TODO:
             self.simpleReg()
         elif(self.operation == "Logistic Regression"):
+            #TODO:
             self.logReg()
         elif(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
             self.TTest()
         elif(self.operation == "ANOVA"):
+            #TODO:
             self.ANOVA()
         elif(self.operation == "MANOVA"):
+            #TODO:
             self.MANOVA()
         else:
+            #TODO:
             self.correlation()
         
     def TTest(self):
@@ -51,7 +57,10 @@ class PerformOperation:
         if(pVal < self.confidence):
             print("reject null: significant difference")
         else:
-            print("")
+            print("do not reject null: no significant difference")
+
+
+
 
 
 
