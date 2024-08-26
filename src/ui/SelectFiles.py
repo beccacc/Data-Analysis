@@ -20,14 +20,16 @@ class SelectFiles:
         self.root.mainloop()
 
     def viewFiles(self):
-        self.viewButton.destroy()
+        self.viewButton.grid_forget()
         fileList = self.fileUpload.getFileList()
         # numFiles = len(fileList)
+        viewLabel = tk.Label(self.root, text="Choose files: ")
+        viewLabel.grid()
         for i in range(len(fileList)):
             button = Button(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
             button.grid(row=i+1, column=0, pady=2)
         selectedFilesLabel = tk.Label(self.root, text="Selected Files:")
-        selectedFilesLabel.grid(button.grid(row=0, column=1, pady=2, padx=2))
+        selectedFilesLabel.grid(row=0, column=2, padx=2, pady=2)
 
 
 
@@ -36,12 +38,12 @@ class SelectFiles:
             self.selectedFiles.append(file)
             print(f"Added {file[0]} to selected files.")
             fileLabel = tk.Label(self.root, text = file[0])
-            fileLabel.grid(row=len(self.selectedFiles), column=1, pady=2, padx=2)
+            fileLabel.grid(row=len(self.selectedFiles), column=2, pady=2, padx=2)
         else:
             print(f"{file[0]} is already in the list.")
         if(len(self.selectedFiles)>0):
             completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
-            completeButton.grid(row=0, column=2, pady=2, padx=2)
+            completeButton.grid(row=0, column=4, pady=2, padx=2)
 
     def completeSelection(self):
         self.root.destroy()
