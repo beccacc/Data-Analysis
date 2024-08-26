@@ -1,5 +1,3 @@
-import sys
-import os
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
@@ -19,6 +17,7 @@ class PerformOperation:
         if(self.operation == "Two-tail T-Test" or self.operation == "One-tail T-Test" or
             self.operation == "ANOVA" or self.operation == "MANOVA"):
             self.confidence = operation.getConfidence()
+        self.results = []
 
     def performOperation(self):
         if(self.operation == "Multiple Regression"):
@@ -53,10 +52,11 @@ class PerformOperation:
         dofDenom = (i^2)/(indNum - 1) + (d^2)/(depNum - 1)
         dof = dofNum / dofDenom
         pVal = stats.t.sf(abs(tVal), dof)
-        if(pVal < self.confidence):
-            print("reject null: significant difference")
-        else:
-            print("do not reject null: no significant difference")
+        self.results = [self.operation, self.indVar, self.depVar, pVal, self.confidence]
+        # if(pVal < self.confidence):
+        #     print("reject null: significant difference")
+        # else:
+        #     print("do not reject null: no significant difference")
 
 
 
@@ -86,10 +86,11 @@ class PerformOperation:
         MSE = SSE/df2
         fVal = MSB/MSE
         fCrit = stats.f.ppf(self.confidence, df1, df2)
-        if(fVal>fCrit):
-            print("reject null: significant difference")
-        else:
-            print("do not reject null: no significant difference")
+        self.results = [self.operation, self.indVar, self.depVar, fVal, fCrit]
+        # if(fVal>fCrit):
+        #     print("reject null: significant difference")
+        # else:
+        #     print("do not reject null: no significant difference")
 
     # def MANOVA(self):
     #     independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
@@ -111,7 +112,8 @@ class PerformOperation:
         logr = lm.LogisticRegression()
         logr.fit(independent, dependent)
         pVal = np.exp(logr.coef_)
-        print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
+        self.results = [self.operation, self.indVar, self.depVar, pVal]
+        # print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
 
     def simpleReg(self):
         independent = self.data.loc[:,self.indVar]
@@ -119,7 +121,8 @@ class PerformOperation:
         simpleR = lm.LinearRegression()
         simpleR.fit(independent, dependent)
         pVal = simpleR.coef_
-        print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
+        self.results = [self.operation, self.indVar, self.depVar, pVal]
+        # print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
             
     def multiReg(self):
         independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
@@ -131,10 +134,11 @@ class PerformOperation:
         multiR = lm.LinearRegression()
         multiR.fit(independents, dependent)
         pVals = multiR.coef_
-        outputString = ""
-        for i in range(len(self.indVar)):
-            outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
-        print(outputString)
+        # outputString = ""
+        self.results = [self.operation, self.indVar, self.depVar, pVals]
+        # for i in range(len(self.indVar)):
+        #     outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
+        # print(outputString)
 
     def correlation(self):
         independent = self.data.loc[:,self.indVar]
@@ -146,4 +150,8 @@ class PerformOperation:
             extra = len(dependent) - len(independent)
             dependent.drop(dependent.tail(extra).index, inplace = True)
         corr = stats.pearsonr(independent, dependent).statistic
-        print("The Pearson correlation coefficient for " + independent + " and " + dependent + " is " + str(corr))
+        self.results = [self.operation, self.indVar, self.depVar, corr]
+        # print("The Pearson correlation coefficient for " + independent + " and " + dependent + " is " + str(corr))
+    
+    def getResults(self):
+        return self.results
