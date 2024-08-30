@@ -21,7 +21,7 @@ def main():
     performOperation = PerformOperation(chooseVariables, operation)
     displayResults = DisplayResults(performOperation)
     displayResults.display()
-
+ 
     # chooseVariables.chooseVars()
     
 
