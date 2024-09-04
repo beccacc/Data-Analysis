@@ -13,11 +13,13 @@ class PerformOperation:
         self.indVar = chooseVariables.getIndVar()
         self.depVar = chooseVariables.getDepVar()
         self.operation = operation.getOperation()
-        self.data = chooseVariables.getDataSet()
-        if(self.operation == "Two-tail T-Test" or self.operation == "One-tail T-Test" or
-            self.operation == "ANOVA" or self.operation == "MANOVA"):
+        self.data = chooseVariables.getDataset()
+        if(self.operation == "One-tail T-Test" or self.operation == "ANOVA" or self.operation == "MANOVA"):
             self.confidence = operation.getConfidence()
+        if(self.operation == "Two-tail T-Test"):
+            self.confidence = operation.getConfidence()*2
         self.results = []
+        self.performOperation()
 
     def performOperation(self):
         if(self.operation == "Multiple Regression"):
@@ -142,7 +144,11 @@ class PerformOperation:
 
     def correlation(self):
         independent = self.data.loc[:,self.indVar]
+        # print("********INDEPENDENT*********: ")
+        # print(independent)
         dependent = self.data.loc[:, self.depVar]
+        # print("********DEPENDENT*********: ")
+        # print(dependent)
         if(len(independent) > len(dependent)):
             extra = len(independent) - len(dependent)
             independent.drop(independent.tail(extra).index, inplace = True)

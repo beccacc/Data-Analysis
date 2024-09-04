@@ -5,23 +5,18 @@ import tkinter as tk
 class DisplayResults:
     def __init__(self, performOperation):
         self.results = performOperation.getResults()
+        print("  ********RESULTS******: ")
+        print(self.results)
         self.operation = self.results[0]
         self.indVar = self.results[1]
         self.depVar = self.results[2]
         self.root = tk.Tk()
-        self.root.geometry("400x250")
-        # self.frame = tk.Frame(self.root)
-        # self.frame.pack()
+        self.root.geometry("1000x1000")
         self.root.title("Data Analysis Results")
         self.operationLabel = tk.Label(self.root, text="Performing " + self.operation)
         self.operationLabel.grid(row=0, column=0, pady=2)
-        self.viewButton
-        # self.uploadButton = tk.Button(self.root, text="Upload File", command=self.importFile)
-        # self.uploadButton.pack(side=tk.TOP)
-        # self.fileLabel = tk.Label(self.root, text = "Files uploaded:")
-        # self.fileLabel.pack(side=tk.LEFT)
-        # # print("created uploadButton")
-        # self.completeButton = tk.Button(self.root, text="Complete Upload", command=self.completeUpload)
+        self.display()
+
         self.root.mainloop()
     
 
@@ -34,8 +29,8 @@ class DisplayResults:
                 tk.Label(self.root, text=self.indVar[i]).grid(row=i+1, column=0, pady=2)
             depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
             depVarLabel.grid(row=len(self.indVar)+1, column=0, pady=2)
-            self.viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVals: self.multiReg(p))
-            self.viewButton.grid(row = len(self.indVar) + 3, column=0, pady=2)
+            viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVals: self.multiReg(p))
+            viewButton.grid(row = len(self.indVar) + 3, column=0, pady=2)
             # self.multiReg(pVals)
         elif(self.operation == "Simple Regression"):
             pVal = self.results[3]
@@ -89,7 +84,9 @@ class DisplayResults:
             # self.correlation(corr)
     
     def multiReg(self, pVals):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         dep = self.depVar
         for i in range(len(self.indVar)):
             var = self.indVar[i]
@@ -98,17 +95,23 @@ class DisplayResults:
             label.grid(row = len(self.indVar) + 5 + i, column=0, pady=2)
     
     def simpleReg(self, pVal):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + pVal)
         label.grid(row = 6, column=0, pady=2)
 
     def logReg(self, pVal):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + pVal)
         label.grid(row = 6, column=0, pady=2)
     
     def TTest(self, pVal, conf):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         nullLabel = tk.Label(self.root, text="Null Hypothesis: Average " + self.indVar + " is the same as average " + self.depVar)
         nullLabel.grid(row=6, column=0, pady=2)
         if(pVal<conf):
@@ -118,7 +121,9 @@ class DisplayResults:
         label.grid(row = 8, column=0, pady=2)
     
     def ANOVA(self, fVal, fCrit):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         preLabelText = "average "
         for i in range(len(self.depVar)):
             if(i!=len(self.depVar)-1):
@@ -135,7 +140,9 @@ class DisplayResults:
         # print("ANOVA")
     
     def correlation(self, corr):
-        self.viewButton.pack_forget()
+        for w in self.root.winfo_children():
+            if isinstance(w, tk.Button):
+               w.grid_forget()
         label = tk.Label(self.root, text = "The Pearson correlation coefficient for " + self.indVar + " and " + self.depVar + " is " + str(corr))
         label.grid(row = 6, column=0, pady=2)
 
