@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+import numpy as np
 
-
-class Operations:
+class MultiFileOperations:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("400x250")
@@ -64,5 +64,90 @@ class Operations:
     def getConfidence(self):
         return self.confidence
 
-            
+class SingleFileOperations:
+    def __init__(self, chooseVariables, selectFile):
+        self.root = tk.Tk()
+        self.root.geometry("400x250")
+        self.root.title("Choose an Operation")
+        self.varName = chooseVariables.getVar()
+        self.filterVarName = chooseVariables.getFilterVar()
+        self.file = selectFile.getFile()
+        self.data = chooseVariables.getData()
+        self.variable = self.data[self.varName]
+        if(self.filterVarName != "None"):
+            self.filterVar = self.data[self.filterVarName]
+        
+        self.operation = ""
+        self.filter = ""
+        self.filterValue = ""
 
+        self.operations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
+
+        self.whereNum = [">", ">=", "=", "<=", "<", "!="]
+        self.whereCat = ["=", "!="]
+
+        self.operationOps = ttk.Combobox(self.root, values=self.operations)
+        self.operationOps.set("Choose a Query")
+        self.operationOps.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton = tk.Button(self.root, text="Submit", command=self.complete)
+
+        if(self.filterVarName != "None"):
+            self.queryVarLabel = tk.Label(self.root, text = self.varName + " WHERE " + self.filterVarName)
+            self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+            if isinstance(self.variable.iloc[1], (int, float, np.integer)):
+                self.filterOperations = ttk.Combobox(self.root, values=self.whereNum)
+                self.filterValues = tk.Text(self.root, height = 1, width = 5)
+                self.filterValues.insert(tk.END, "Input a Value")
+
+            else:
+                self.filterOperations = ttk.Combobox(self.root, values=self.whereCat)
+                self.filterValueOptions = set(self.filterVar)
+                self.filterValues = ttk.Combobox(self.root, values=self.filterValueOptions)
+                self.filterValues.set("Choose a Value")
+            self.filterOperations.set("Choose a Filter")
+            self.filterOperations.grid(row=0, column=2, padx=2, pady=2)
+            self.filterValues.grid(row=0, column=3, padx=2, pady=2)
+        else:
+            self.queryVarLabel = tk.Label(self.root, text = self.varName)
+            self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+
+
+
+
+    def complete(self):
+        self.operation = self.operationOps.get()
+        if(self.filterVarName != "None"):
+            self.filter = self.filterOperations.get()
+            if isinstance(self.variable.iloc[1], (int, float, np.integer)):
+                self.filterValue = self.filterValues.get("1.0",tk.END)
+            else:
+                self.filterValue = self.filterValues.get()
+        self.root.destroy()
+        
+    def getOperation(self):
+        return self.operation
+
+    def getFilter(self):
+        return self.filter
+    
+    def getFilterValue(self):
+        return self.filterValue
+
+    def getFilterData(self):
+        return self.filterVar
+    
+    def getVarData(self):
+        return self.variable
+
+    def getVarName(self):
+        return self.varName
+    
+    def getFilterVarName(self):
+        return self.filterVarName
+
+    def getString(self):
+        if(self.filterVarName != "None"):
+            text = self.operation + " " + self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " + self.filterValue
+        else:
+            text = self.operation + " " + self.varName
+        return text
