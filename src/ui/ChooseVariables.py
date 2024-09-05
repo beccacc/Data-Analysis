@@ -3,8 +3,8 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from Operations import Operations
-from SelectFiles import SelectFiles
+# from Operations import MultiFileOperations
+# from SelectFiles import SelectFiles
 # import sys
 # import os
 # sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
@@ -35,18 +35,14 @@ class ChooseVariables:
         
         self.root = tk.Tk()
         self.root.title("Select Variables")
-        self.root.geometry("400x250")
-        self.indVarOptionsList = ttk.Combobox(self.root, values=self.indVarOptions)
+        self.root.geometry("500x250")
+        self.indVarOptionsList = ttk.Combobox(self.root, values=self.indVarOptions, width=22)
         self.indVarOptionsList.set("Choose an Independent Variable")
-        self.depVarOptionsList = ttk.Combobox(self.root, values=self.depVarOptions)
+        self.depVarOptionsList = ttk.Combobox(self.root, values=self.depVarOptions, width=20)
         self.depVarOptionsList.set("Choose a Dependent Variable")
 
         self.indSubmitButton = tk.Button(self.root, text="Submit", command=self.setInd)
         self.depSubmitButton = tk.Button(self.root, text="Submit", command=self.setDep)
-
-
-        # tk.Label(self.root, text="Independent Variable Options: ").grid(row=0, column=0,sticky = W, pady = 2)
-        # tk.Label(self.root, text="Dependent Variable Options: ").grid(row=0, column=1,sticky = W, pady = 2)
         
         self.display()
         self.root.mainloop()
@@ -116,23 +112,23 @@ class ChooseVariables:
 
     def display(self):
         if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
-            tk.Label(self.root, text="Choose Independent Variables").grid(row=0, column=0, padx=2, pady=2)
+            tk.Label(self.root, text="Choose Independent Variables").grid(row=0, column=0, columnspan=2, padx=2, pady=2)
             for i in range(len(self.indVarOptions)):
                 button = ttk.Checkbutton(self.root, text=self.indVarOptions[i], command=lambda v=self.indVarOptions[i]: self.setIndVars(v))
-                button.grid(row=i+1, column=0, padx=2, pady=2)
+                button.grid(row=i+1, column=0, columnspan=2, padx=2, pady=2)
             self.indSubmitButton.grid(row=len(self.indVarOptions)+1, column=0, padx=2, pady=2)
         else:
-            self.indVarOptionsList.grid(row=0, column=0, padx=2, pady=2)
-            self.indSubmitButton.grid(row=3, column=0, padx=2, pady=2)
+            self.indVarOptionsList.grid(row=0, column=0, columnspan=2, padx=2, pady=2)
+            self.indSubmitButton.grid(row=1, column=0, padx=2, pady=2)
         if(self.operation == "MANOVA" or self.operation == "ANOVA"):
-            tk.Label(self.root, text="Choose Dependent Variables").grid(row=0, column=1, padx=2, pady=2)
+            tk.Label(self.root, text="Choose Dependent Variables").grid(row=0, column=2, columnspan=2, padx=2, pady=2)
             for i in range(len(self.depVarOptions)):
                 button = ttk.Checkbutton(self.root, text=self.depVarOptions[i], command=lambda v=self.depVarOptions[i]: self.setDepVars(v))
-                button.grid(row=i+1, column=1, padx=2, pady=2)
-                self.depSubmitButton.grid(row=len(self.depVarOptions)+1, column=0, padx=2, pady=2)
+                button.grid(row=i+1, column=2, columnspan=2, padx=2, pady=2)
+                self.depSubmitButton.grid(row=len(self.depVarOptions)+1, column=2, padx=2, pady=2)
         else:
-            self.depVarOptionsList.grid(row=1, column=1, padx=2, pady=2)
-            self.depSubmitButton.grid(row=3, column=1, padx=2, pady=2)
+            self.depVarOptionsList.grid(row=0, column=2, columnspan=2, padx=2, pady=2)
+            self.depSubmitButton.grid(row=1, column=2, padx=2, pady=2)
 
     def setVars(self):
         if(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
@@ -187,65 +183,6 @@ class ChooseVariables:
                     w.grid_forget()
         if(self.indCompleted and self.depCompleted):
             self.root.destroy()
-            
-
-
-    # def setInd(self):
-    #     if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
-    #         for w in self.root.winfo_children():
-    #             if isinstance(w, ttk.Checkbutton):
-    #                 if()
-    #         self.indVars.append(i)
-    #         tk.Button(self.left, text="Complete Selection", command=lambda : self.completeSelection("ind")).grid(row=len(self.indVarOptions), column=0, sticky=W, pady=2)
-    #         for button in self.left.winfo_children():
-    #             if(button.cget('text') in self.indVar):
-    #                 print(button.cget('text') + " disabled *******")
-    #                 button['state'] = DISABLED
-    #     else:
-    #         self.indVar = i
-    #         for button in self.left.winfo_children():
-    #             button['state'] = DISABLED
-    #         self.indCompleted = True
-    #     if(self.indCompleted == True and self.depCompleted == True):
-    #         self.left.pack_forget()
-    #         self.right.pack_forget()
-    #         # self.completeBut.pack()
-        
-    
-    # def setDep(self, d):
-    #     if(self.operation == "MANOVA" or self.operation == "ANOVA"):
-    #         self.depVars.append(d)
-    #         tk.Button(self.right, text="Complete Selection", command=lambda : self.completeSelection("dep")).grid(row=len(self.depVarOptions), column=0, sticky=W, pady=2)
-    #         for button in self.right.winfo_children():
-    #             if(button.cget('text') in self.depVar):
-    #                 button['state'] = DISABLED
-    #     else:
-    #         self.depVar = d
-    #         for button in self.right.winfo_children():
-    #             button['state'] = DISABLED
-    #         self.depCompleted = True
-    #     if(self.indCompleted == True and self.depCompleted == True):
-    #         self.left.pack_forget()
-    #         self.right.pack_forget()
-    #         # self.completeBut.pack()
-    
-    # def completeSelection(self, type):
-    #     if(type == "ind"):
-    #         for button in self.left.winfo_children():
-    #             button.grid_forget()
-    #         self.indCompleted = True
-    #         print()
-    #         Label(self.left, text="Selected Independent Variable(s): ").grid(row=0, column=0, sticky=W, pady=2)
-    #         for i in range(len(self.indVars)):
-    #             Label(self.left, text = self.indVars[i]).grid(row=i+1, column=0, sticky=W, pady=2)
-    #     elif(type == "dep"):
-    #         for button in self.right.winfo_children():
-    #             button.grid_forget()
-    #         if(self.indCompleted != True):
-    #             self.depCompleted = True
-    #         Label(self.right, text="Selected Dependent Variable(s): ").grid(row=0, column=0, sticky=W, pady=2)
-    #         for i in range(len(self.depVars)):
-    #             Label(self.right, text = self.depVars[i]).grid(row=i+1, column=0, sticky=W, pady=2)
 
     def getIndVar(self):
         if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
@@ -260,4 +197,76 @@ class ChooseVariables:
     def getDataset(self):
         return self.data
 
+class ChooseVariable:
+    def __init__(self, selectFile):
+        self.file = selectFile.getFile()
+        self.data = self.setData()
+        self.varList = self.setVarList()
+        self.variable = ""
+        self.filterVar = ""
+        
+        self.root = tk.Tk()
+        self.root.title("Select Variables")
+        self.root.geometry("500x250")
+        self.varOptions = ttk.Combobox(self.root, values=self.varList, width=22)
+        self.varOptions.set("Choose a Variable to Query")
+        self.varOptions.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton1 = tk.Button(self.root, text="Submit", command=self.setVar)
+        self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
 
+        self.depVarOptions = ttk.Combobox(self.root, width=20)
+        self.depVarOptions.set("Choose a Filter Variable")
+        self.submitButton2 = tk.Button(self.root, text="Submit", command=self.setFilterVar)
+
+        self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
+        self.changeButton = tk.Button(self.root, text="Change Selection", command=self.changeSelection)
+        
+        self.root.mainloop()
+
+    def setData(self):
+        data = pd.read_csv(self.file[1])
+        return data
+    
+    def setVarList(self):
+        varList = list(self.data.columns)
+        return varList
+    
+    def setVar(self):
+        self.variable = self.varOptions.get()
+        self.varOptions.grid_forget()
+        self.submitButton1.grid_forget()
+        tk.Label(self.root, text="Querying " + self.variable).grid(row=0, column=0, padx=2, pady=2)
+        
+        depVarOptionsList = self.varList.copy()
+        depVarOptionsList.append("None")
+        depVarOptionsList.remove(self.variable)
+        self.depVarOptions['values'] = depVarOptionsList
+        self.depVarOptions.grid(row=1, column=0, padx=2, pady=2)
+        self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+    
+    def setFilterVar(self):
+        self.filterVar = self.depVarOptions.get()
+        self.depVarOptions.grid_forget()
+        self.submitButton2.grid_forget()
+        tk.Label(self.root, text="based on " + self.filterVar).grid(row=1, column=0, padx=2, pady=2)
+        self.completeButton.grid(row=2, column=0, padx=2, pady=2)
+        self.changeButton.grid(row=2, column=1, padx=2, pady=2)
+
+    
+    def changeSelection(self):
+        for w in self.root.winfo_children():
+            w.grid_forget()
+        self.varOptions.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
+    
+    def completeSelection(self):
+        self.root.destroy()
+    
+    def getVar(self):
+        return self.variable
+
+    def getFilterVar(self):
+        return self.filterVar
+
+    def getData(self):
+        return self.data

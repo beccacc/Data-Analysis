@@ -15,9 +15,11 @@ class ChooseUsage:
 
     def oneFile(self):
         self.usage = "oneFile"
+        self.root.destroy()
     
     def multiFile(self):
         self.usage = "multiFile"
+        self.root.destroy()
     
     def getUsage(self):
         return self.usage

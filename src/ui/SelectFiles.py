@@ -1,6 +1,9 @@
 from FileUpload import FileUpload
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
+from operator import itemgetter
+
 
 fileSelected = False
 fileUpload = FileUpload()
@@ -11,7 +14,7 @@ class SelectFiles:
         self.fileUpload = fileUpload
         print("fileUpload in SelectFiles")
         self.root = tk.Tk()
-        self.root.title("Select your File")
+        self.root.title("Select your Files")
         self.root.geometry("400x250")
         # print("root created")
         self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
@@ -53,4 +56,36 @@ class SelectFiles:
 
     def getSelection(self):
         return self.selectedFiles
+    
+class SelectFile:
+    def __init__(self, fileUpload):
+        self.selectedFile = ("", "")
+        self.fileList = fileUpload.getFileList()
+        self.fileNames = []
+        for i in range(len(self.fileList)):
+            self.fileNames.append(self.fileList[i][0])
+        self.root = tk.Tk()
+        self.root.title("Select your File")
+        self.root.geometry("400x250")
+        self.chooseFile = ttk.Combobox(self.root, values=self.fileNames)
+        self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
+        self.viewButton.grid(row=0, column=0, pady=2)
+        self.submitButton = tk.Button(self.root, text="Submit", command=self.setFile)
+        self.root.mainloop()
+
+    def viewFiles(self):
+        self.viewButton.grid_forget()
+        self.chooseFile.set("Choose a File")
+        self.chooseFile.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton.grid(row=0, column=1, padx=2, pady=2)
+
+    def setFile(self):
+        fileName = self.chooseFile.get()
+        for file in self.fileList:
+            if(file[0] == fileName):
+                self.selectedFile = file
+        self.root.destroy()
+
+    def getFile(self):
+        return self.selectedFile
     

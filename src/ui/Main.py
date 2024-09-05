@@ -7,7 +7,7 @@ from ChooseUsage import ChooseUsage
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-from model.PerformOperation import PerformOperation
+from model.PerformOperation import PerformAnalysis
 
 
 
@@ -19,7 +19,7 @@ def main():
         selectFiles = SelectFiles(fileUpload)
         operation = MultiFileOperations()
         chooseVariables = ChooseVariables(selectFiles, operation)
-        performOperation = PerformOperation(chooseVariables, operation)
+        performOperation = PerformAnalysis(chooseVariables, operation)
         displayResults = DisplayResultsMulti(performOperation)
         displayResults.display()
     else:
