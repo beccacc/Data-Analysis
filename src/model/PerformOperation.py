@@ -271,6 +271,12 @@ class PerformOperation:
         if(self.filterVarName!="None"):
             return self.filterValue
 
+    def getVarName(self):
+        return self.varName
+    
+    def getFilterVarName(self):
+        return self.filterVarName
+
     def getVarData(self):
         return self.variable
     

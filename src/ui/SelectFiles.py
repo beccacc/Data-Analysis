@@ -71,6 +71,7 @@ class SelectFile:
         self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
         self.viewButton.grid(row=0, column=0, pady=2)
         self.submitButton = tk.Button(self.root, text="Submit", command=self.setFile)
+        self.errorMessage = tk.Label(self.root, text="Please Select a File", fg="#FF0000")
         self.root.mainloop()
 
     def viewFiles(self):
@@ -80,11 +81,14 @@ class SelectFile:
         self.submitButton.grid(row=0, column=1, padx=2, pady=2)
 
     def setFile(self):
-        fileName = self.chooseFile.get()
-        for file in self.fileList:
-            if(file[0] == fileName):
-                self.selectedFile = file
-        self.root.destroy()
+        if(self.chooseFile.get()=="Choose a File"):
+            self.errorMessage.grid(row=1, column=0, padx=2, pady=2)
+        else:
+            fileName = self.chooseFile.get()
+            for file in self.fileList:
+                if(file[0] == fileName):
+                    self.selectedFile = file
+            self.root.destroy()
 
     def getFile(self):
         return self.selectedFile

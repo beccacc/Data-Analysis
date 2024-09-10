@@ -100,6 +100,11 @@ class SingleFileOperations:
         self.submitButton1 = tk.Button(self.root, text="Submit", command=self.submit1)
         self.submitButton2 = tk.Button(self.root, text="Submit", command=self.submit2)
         self.submitButton3 = tk.Button(self.root, text="Submit", command=self.submit3)
+
+        self.errorMessage1 = tk.Label(self.root, text="Please select an operation", fg="#FF0000")
+        self.errorMessage2 = tk.Label(self.root, text="Please select a filter", fg="#FF0000")
+        self.errorMessage3 = tk.Label(self.root, text="Please select a filter value", fg="#FF0000")
+        self.errorMessage4 = tk.Label(self.root, text="Please input a number", fg="#FF0000")
         
         if(self.filterVarName != "None"):
             self.queryVarLabel = tk.Label(self.root, text = self.varName + " WHERE " + self.filterVarName)
@@ -118,7 +123,6 @@ class SingleFileOperations:
 
         # print("operations.__init__() complete button")
         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.complete)
-        self.errorLabel = tk.Label(self.root, text="Please input a number", fg="#FF0000")
         # print("operations.__init__() calling display")
         self.display()
         # print("operations.__init__() called display")
@@ -133,25 +137,34 @@ class SingleFileOperations:
 
 
     def submit1(self):
-        self.operation = self.operationOps.get()
-        # print("*****OPERATION: " + self.operation + " in operations.submit1()")
-        self.operationOps.grid_forget()
-        self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
-        self.submitButton1.grid_forget()
-        if(self.filterVarName == "None"):
-            self.root.destroy()
+        if(self.operationOps.get()=="Choose a Query"):
+            self.errorMessage1.grid(row=2, column=0, padx=2, pady=2)
         else:
-            self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
-            self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+            self.errorMessage1.grid_forget()
+            self.operation = self.operationOps.get()
+            # print("*****OPERATION: " + self.operation + " in operations.submit1()")
+            self.operationOps.grid_forget()
+            self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
+            self.submitButton1.grid_forget()
+            
+            if(self.filterVarName == "None"):
+                self.root.destroy()
+            else:
+                self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
+                self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
             
     
     def submit2(self):
-        self.filter = self.filterOperations.get()
-        self.filterOperations.grid_forget()
-        self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " +  self.filter
-        self.submitButton2.grid_forget()
-        self.filterValues.grid(row=1, column=0, padx=2, pady=2)
-        self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
+        if(self.filterOperations.get()=="Choose a Filter"):
+            self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
+        else:
+            self.errorMessage2.grid_forget()
+            self.filter = self.filterOperations.get()
+            self.filterOperations.grid_forget()
+            self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " +  self.filter
+            self.submitButton2.grid_forget()
+            self.filterValues.grid(row=1, column=0, padx=2, pady=2)
+            self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
 
     def submit3(self):
         if isinstance(self.varData.iloc[1], (int, float, np.integer)):
@@ -160,13 +173,23 @@ class SingleFileOperations:
                 self.filterValue = int(self.filterValue)
             except:
                 self.filterValues.insert(tk.END, "Input a Value")
-                self.errorLabel.grid(row=3, column=0, padx=2, pady=2)
+                self.errorMessage4.grid(row=3, column=0, padx=2, pady=2)
+            self.errorMessage4.grid_forget()
             self.filterValues.grid_forget()
             self.submitButton3.grid_forget()
             self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
             self.completeButton.grid(row=1, column=0, padx=2, pady=2)
         else:
-            self.filterValue = self.filterValues.get()
+            if(self.filterValues.get()=="Choose a Value"):
+                self.errorMessage3.grid(row=4, column=0, padx=2, pady=2)
+            else:
+                self.filterValue = self.filterValues.get()
+                self.errorMessage3.grid_forget()
+                self.filterValues.grid_forget()
+                self.submitButton3.grid_forget()
+                self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
+                self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+
         
 
     

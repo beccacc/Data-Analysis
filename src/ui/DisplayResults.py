@@ -154,6 +154,8 @@ class DisplayResultsOne:
         self.filter = performOperation.getFilter()
         self.filterValue = performOperation.getFilterValue()
 
+        self.varName = performOperation.getVarName()
+        self.filterVarName = performOperation.getFilterVarName()
         self.variable = performOperation.getVarData()
         self.filterVariable = performOperation.getFilterData()
 
@@ -172,12 +174,23 @@ class DisplayResultsOne:
     
 
     def showResults(self):
-        print("RESULTS:")
-        if(self.operation=="SELECT"):
-            print(len(self.results))
+        self.operationLabel.grid_forget()
+        self.viewButton.grid_forget()
+        if(self.operation!="SELECT"):
+            txt="The " + self.operation + " value of " + self.varName
+            if(self.filterVarName!="None"):
+                 txt = txt + " where " + self.filterVarName + " " + self.filter + " " + str(self.filterValue)
+            txt = txt + " is " + str(self.results)
+            tk.Label(self.root, text=txt).grid(row=0, column=0, padx=2, pady=2)
         else:
-            print(self.results)
-        
-        
+            txt="Showing all instances of " + self.varName + " where " + self.filterVarName + " " + self.filter + " " + str(self.filterValue) + ":"
+            tk.Label(self.root, text=txt).grid(row=0, column=0, padx=2, pady=2)
+            resultsList = tk.Listbox(self.root)
+            resultsList.insert(self.results)
+            resultsList.grid(row=1, column=0, padx=2, pady=2)
+            scrollbar = tk.Scrollbar(self.root)
+            scrollbar.grid(row=1, column=1, padx=2, pady=2)
+            resultsList.config(yscrollcommand = scrollbar.set)
+            scrollbar.config(command = resultsList.yview)
         
     
