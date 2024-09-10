@@ -147,19 +147,21 @@ class DisplayResultsMulti:
         label.grid(row = 6, column=0, pady=2)
 
 class DisplayResultsOne:
-    def __init__(self, operations, performOperation):
-        self.operation = operations.getOperation()
-        self.filter = operations.getFilter()
-        self.filterValue = operations.getFilterValue()
+    def __init__(self, performOperation):
+        self.results = performOperation.getResults()
+        
+        self.operation = performOperation.getOperation()
+        self.filter = performOperation.getFilter()
+        self.filterValue = performOperation.getFilterValue()
 
-        self.variable = operations.getVarData()
-        self.filterVariable = operations.getFilterData()
+        self.variable = performOperation.getVarData()
+        self.filterVariable = performOperation.getFilterData()
 
 
         self.root = tk.Tk()
         self.root.geometry("1000x1000")
         self.root.title("Data Analysis Results")
-        self.operationLabel = tk.Label(self.root, text= operations.getText())
+        self.operationLabel = tk.Label(self.root, text= performOperation.getString())
         self.operationLabel.grid(row=0, column=0, pady=2)
 
         self.viewButton = tk.Button(self.root, text = "View Results", command=self.showResults)
@@ -170,5 +172,8 @@ class DisplayResultsOne:
     
 
     def showResults(self):
-        print("TODO")
+        # print(type(self.results))
+        print("RESULTS:")
+        print(self.results)
+        
     
