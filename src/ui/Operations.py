@@ -64,80 +64,252 @@ class MultiFileOperations:
     def getConfidence(self):
         return self.confidence
 
+# class SingleFileOperations:
+#     def __init__(self, chooseVariables, selectFile):
+#         self.root = tk.Tk()
+#         self.root.geometry("400x250")
+#         self.root.title("Choose an Operation")
+#         self.varName = chooseVariables.getVar()
+#         self.filterVarName = chooseVariables.getFilterVar()
+#         self.file = selectFile.getFile()
+#         self.data = chooseVariables.getData()
+#         self.varData = self.data[self.varName]
+#         if(self.filterVarName != "None"):
+#             self.filterData = self.data[self.filterVarName]
+#             print(self.filterData)
+        
+#         self.operation = ""
+#         self.filter = ""
+#         self.filterValue = ""
+
+#         self.submitButton1 = tk.Button(self.root, text="Submit", command=self.submit1)
+#         self.submitButton2 = tk.Button(self.root, text="Submit", command=self.submit2)
+#         self.submitButton3 = tk.Button(self.root, text="Submit", command=self.submit3)
+
+
+
+#     def display(self):
+#         numOperations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
+#         catOperations = ["MODE", "SELECT"]
+
+#         whereNum = [">", ">=", "=", "<=", "<", "!="]
+#         whereCat = ["=", "!="]
+
+#         if(isinstance(self.varData, str)):
+#             operationOps = ttk.Combobox(self.root, values=catOperations)
+#         else:
+#             self.operationOps = ttk.Combobox(self.root, values=numOperations)
+#         operationOps.set("Choose a Query")
+#         operationOps.grid(row=0, column=0, padx=2, pady=2)
+#         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
+
+#         if(self.filterVarName != "None"):
+#             self.queryVarLabel = tk.Label(self.root, text = self.varName + " WHERE " + self.filterVarName)
+#             self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+#             if isinstance(self.varData.iloc[1], (int, float, np.integer)):
+#                 self.filterOperations = ttk.Combobox(self.root, values=self.whereNum)
+#                 self.filterValues = tk.Text(self.root, height = 1, width = 5)
+#                 self.filterValues.insert(tk.END, "Input a Value")
+
+#             else:
+#                 self.filterOperations = ttk.Combobox(self.root, values=self.whereCat)
+#                 self.filterValueOptions = set(self.filterData)
+#                 self.filterValues = ttk.Combobox(self.root, values=self.filterValueOptions)
+#                 self.filterValues.set("Choose a Value")
+#             self.filterOperations.set("Choose a Filter")
+#         else:
+#             self.queryVarLabel = tk.Label(self.root, text = self.varName)
+#             self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+#         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.complete)
+
+
+
+#     def submit1(self):
+#         self.operation = self.operationOps.get()
+#         print("*****OPERATION: " + self.operation + " in operations.submit1()")
+#         self.operationOps.grid_forget()
+#         self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
+#         self.submitButton1.grid_forget()
+#         if(self.filterVarName == "None"):
+#             self.root.destroy()
+#         else:
+#             self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
+#             self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+            
+    
+#     def submit2(self):
+#         self.filter = self.filterOperations.get()
+#         self.filterOperations.grid_forget()
+#         self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " +  self.filter
+#         self.submitButton2.grid_forget()
+#         self.filterValues.grid(row=1, column=0, padx=2, pady=2)
+#         self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
+
+#     def submit3(self):
+#         if isinstance(self.varData.iloc[1], (int, float, np.integer)):
+#             self.filterValue = self.filterValues.get("1.0",tk.END)
+#         else:
+#             self.filterValue = self.filterValues.get()
+#         self.filterValues.grid_forget()
+#         self.submitButton3.grid_forget()
+#         self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValues)
+#         self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+    
+#     def complete(self):
+#         self.root.destroy()
+        
+#     def getOperation(self):
+#         print("*****OPERATION: " + self.operation + " in operations.getOperation()")
+#         return self.operation
+
+#     def getFilter(self):
+#         return self.filter
+    
+#     def getFilterValue(self):
+#         return self.filterValue
+
+#     def getFilterData(self):
+#         if(self.filterVarName != "None"):
+#             return self.filterData
+#         return ""
+    
+#     def getVarData(self):
+#         return self.varData
+
+#     def getVarName(self):
+#         return self.varName
+    
+#     def getFilterVarName(self):
+#         return self.filterVarName
+
+#     def getString(self):
+#         if(self.filterVarName != "None"):
+#             text = self.operation + " " + self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " + self.filterValue
+#         else:
+#             text = self.operation + " " + self.varName
+#         return text
+
 class SingleFileOperations:
     def __init__(self, chooseVariables, selectFile):
+        # print("operations.__init__() root")
         self.root = tk.Tk()
         self.root.geometry("400x250")
         self.root.title("Choose an Operation")
+        # print("operations.__init__() setting variables")
         self.varName = chooseVariables.getVar()
         self.filterVarName = chooseVariables.getFilterVar()
         self.file = selectFile.getFile()
         self.data = chooseVariables.getData()
-        self.variable = self.data[self.varName]
+        self.varData = self.data[self.varName]
+
+        # print("operations.__init__() filterVarName")
         if(self.filterVarName != "None"):
-            self.filterVar = self.data[self.filterVarName]
-        
-        self.operation = ""
-        self.filter = ""
-        self.filterValue = ""
+            self.filterData = self.data[self.filterVarName]
+            print("*****filter value is none*****")
 
-        self.operations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
-
+        self.numOperations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
+        self.catOperations = ["MODE", "SELECT"]
         self.whereNum = [">", ">=", "=", "<=", "<", "!="]
         self.whereCat = ["=", "!="]
 
-        self.operationOps = ttk.Combobox(self.root, values=self.operations)
+        # print("operations.__init__() operation combobox")
+        if(isinstance(self.varData, str)):
+            self.operationOps = ttk.Combobox(self.root, values=self.catOperations)
+        else:
+            self.operationOps = ttk.Combobox(self.root, values=self.numOperations)
         self.operationOps.set("Choose a Query")
-        self.operationOps.grid(row=0, column=0, padx=2, pady=2)
-        self.submitButton = tk.Button(self.root, text="Submit", command=self.complete)
-
+        
+        # print("operations.__init__() submit buttons")
+        self.submitButton1 = tk.Button(self.root, text="Submit", command=self.submit1)
+        self.submitButton2 = tk.Button(self.root, text="Submit", command=self.submit2)
+        self.submitButton3 = tk.Button(self.root, text="Submit", command=self.submit3)
+        
         if(self.filterVarName != "None"):
             self.queryVarLabel = tk.Label(self.root, text = self.varName + " WHERE " + self.filterVarName)
-            self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
-            if isinstance(self.variable.iloc[1], (int, float, np.integer)):
+            if isinstance(self.varData.iloc[1], str):
+                self.filterOperations = ttk.Combobox(self.root, values=self.whereCat)
+                self.filterValueOptions = set(self.filterData)
+                self.filterValues = ttk.Combobox(self.root, values=self.filterValueOptions)
+                self.filterValues.set("Choose a Value")
+            else:
                 self.filterOperations = ttk.Combobox(self.root, values=self.whereNum)
                 self.filterValues = tk.Text(self.root, height = 1, width = 5)
                 self.filterValues.insert(tk.END, "Input a Value")
-
-            else:
-                self.filterOperations = ttk.Combobox(self.root, values=self.whereCat)
-                self.filterValueOptions = set(self.filterVar)
-                self.filterValues = ttk.Combobox(self.root, values=self.filterValueOptions)
-                self.filterValues.set("Choose a Value")
             self.filterOperations.set("Choose a Filter")
-            self.filterOperations.grid(row=0, column=2, padx=2, pady=2)
-            self.filterValues.grid(row=0, column=3, padx=2, pady=2)
         else:
             self.queryVarLabel = tk.Label(self.root, text = self.varName)
-            self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+
+        # print("operations.__init__() complete button")
+        self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.complete)
+        # print("operations.__init__() calling display")
+        self.display()
+        # print("operations.__init__() called display")
+
+    def display(self):
+        # print("operations.display()")
+        self.operationOps.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
+        self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+        self.root.mainloop()
 
 
 
-
-    def complete(self):
+    def submit1(self):
         self.operation = self.operationOps.get()
-        if(self.filterVarName != "None"):
-            self.filter = self.filterOperations.get()
-            if isinstance(self.variable.iloc[1], (int, float, np.integer)):
-                self.filterValue = self.filterValues.get("1.0",tk.END)
-            else:
-                self.filterValue = self.filterValues.get()
+        # print("*****OPERATION: " + self.operation + " in operations.submit1()")
+        self.operationOps.grid_forget()
+        self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
+        self.submitButton1.grid_forget()
+        if(self.filterVarName == "None"):
+            self.root.destroy()
+        else:
+            self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
+            self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+            
+    
+    def submit2(self):
+        self.filter = self.filterOperations.get()
+        self.filterOperations.grid_forget()
+        self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " +  self.filter
+        self.submitButton2.grid_forget()
+        self.filterValues.grid(row=1, column=0, padx=2, pady=2)
+        self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
+
+    def submit3(self):
+        if isinstance(self.varData.iloc[1], (int, float, np.integer)):
+            self.filterValue = self.filterValues.get("1.0",tk.END)
+        else:
+            self.filterValue = self.filterValues.get()
+        self.filterValues.grid_forget()
+        self.submitButton3.grid_forget()
+        self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValues)
+        self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+    
+    def complete(self):
         self.root.destroy()
         
     def getOperation(self):
+        print("*****OPERATION1: ")
+        print(self.operation)
         return self.operation
 
     def getFilter(self):
-        return self.filter
+        if(self.filterVarName != "None"):
+            return self.filter
+        return ""
     
     def getFilterValue(self):
-        return self.filterValue
+        if(self.filterVarName != "None"):
+            return self.filterValue
+        return ""
 
     def getFilterData(self):
-        return self.filterVar
+        if(self.filterVarName != "None"):
+            return self.filterData
+        return ""
     
     def getVarData(self):
-        return self.variable
+        return self.varData
 
     def getVarName(self):
         return self.varName

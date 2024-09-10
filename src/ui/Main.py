@@ -7,7 +7,7 @@ from ChooseUsage import ChooseUsage
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-from model.PerformOperation import PerformAnalysis
+from model.PerformOperation import PerformAnalysis, PerformOperation
 
 
 
@@ -26,8 +26,9 @@ def main():
         selectFile = SelectFile(fileUpload)
         chooseVariable = ChooseVariable(selectFile)
         operation = SingleFileOperations(chooseVariable, selectFile)
-        displayResults = DisplayResultsOne(operation)
-
+        performOperation = PerformOperation(operation)
+        ops = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
+        displayResults = DisplayResultsOne(performOperation)
 
     # chooseUsage = ChooseUsage()
     
