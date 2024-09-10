@@ -228,7 +228,7 @@ class ChooseVariable:
         return data
     
     def setVarList(self):
-        varList = list(self.data.columns)
+        varList = sorted(list(self.data.columns))
         return varList
     
     def setVar(self):
@@ -238,7 +238,7 @@ class ChooseVariable:
         tk.Label(self.root, text="Querying " + self.variable).grid(row=0, column=0, padx=2, pady=2)
         
         depVarOptionsList = self.varList.copy()
-        depVarOptionsList.append("None")
+        depVarOptionsList.insert(0,"None")
         depVarOptionsList.remove(self.variable)
         self.depVarOptions['values'] = depVarOptionsList
         self.depVarOptions.grid(row=1, column=0, padx=2, pady=2)

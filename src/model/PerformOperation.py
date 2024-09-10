@@ -168,7 +168,7 @@ class PerformOperation:
         self.string = operations.getString()
         # print("*****OPERATION: " + self.operation + " in PerformOperation.__init__()")
         self.filter = operations.getFilter()
-        self.filterValue = operations.getFilterValue()
+        self.filterValue = int(operations.getFilterValue())
         self.varName = operations.getVarName()
         self.filterVarName = operations.getFilterVarName()
         if(self.operation == "SELECT"):
@@ -178,41 +178,56 @@ class PerformOperation:
 
         self.variable = operations.getVarData()
         self.filterVariable = operations.getFilterData()
-        if(self.filter=="None"):
-            self.df = pd.DataFrame(list(self.variable), columns=['x'], )
+        print("******FILTER:")
+        print(self.filterVarName)
+        if(self.filterVarName=="None"):
+            self.df = self.variable.to_frame(name=self.varName)
         else:
-            self.df = pd.DataFrame(list(zip(self.variable, self.filterVariable)), columns=['x', 'y'])
+            self.df=pd.concat({self.varName: self.variable,self.filterVarName: self.filterVariable},axis=1)
             self.df.dropna()
         self.performFilter()
 
 
     def performFilter(self):
         print(self.df)
-        if(self.filter=="None"):
+        print(self.df.columns)
+        if(self.filterVarName=="None"):
             self.performOperation(self.df)
-        elif(self.filter==">"):
-            filtered = []
-            for i in range(len(self.data)):
-                if self.data['y'][i] > self.filterValue:
-                    filtered.append(self.data['x'][i])
-            # print("******FILTERED******")
-            # print(filtered)
-        elif(self.filter==">="):
-            filtered = self.df.query('y >= @self.filterValue')
-        elif(self.filter=="="):
-            filtered = self.df.query('y == @self.filterValue')
-        elif(self.filter=="<="):
-            filtered = self.df.query('y <= @self.filterValue')
-        elif(self.filter=="<"):
-           filtered = self.df.query('y < @self.filterValue')
         else:
-            filtered = self.df.query('y >= @self.filterValue')
-        self.performOperation(filtered)
+            filtered = []
+            print("*****FILTER VALUE:")
+            print(type(self.filterValue))
+            print(self.filterValue)
+            if(self.filter==">"):
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] > self.filterValue):
+                        filtered.append(self.variable[i])
+            elif(self.filter==">="):
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] >= self.filterValue):
+                        filtered.append(self.variable[i])
+            elif(self.filter=="="):
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] == self.filterValue):
+                        filtered.append(self.variable[i])
+            elif(self.filter=="<="):
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] <= self.filterValue):
+                        filtered.append(self.variable[i])
+            elif(self.filter=="<"):
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] < self.filterValue):
+                        filtered.append(self.variable[i])
+            else:
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] >= self.filterValue):
+                        filtered.append(self.variable[i])
+            self.performOperation(filtered)
 
 
     def performOperation(self, filtered):
-        print(filtered)
-        data = filtered['x']
+        # print(filtered)
+        data = filtered
         if(self.operation=="MAX"):
             for i in len(data):
                 if(data[i]>max):
@@ -225,10 +240,10 @@ class PerformOperation:
                     min=data[i]
             self.results = float(min)
         elif(self.operation=="MEAN"):
-            print("operation = MEAN")
-            print(data)
+            # print("operation = MEAN")
+            # print(data)
             self.results = float(np.mean(data))
-            print(self.results)
+            # print(self.results)
         elif(self.operation=="MEDIAN"):
             self.results = float(np.median(data))
         elif(self.operation=="MODE"):
@@ -242,8 +257,8 @@ class PerformOperation:
         return self.results
 
     def getOperation(self):
-        print("*****OPERATION2: ")
-        print(self.operation)
+        # print("*****OPERATION2: ")
+        # print(self.operation)
         return self.operation
     
     def getFilter(self):
