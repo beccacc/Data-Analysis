@@ -168,9 +168,10 @@ class PerformOperation:
         self.string = operations.getString()
         # print("*****OPERATION: " + self.operation + " in PerformOperation.__init__()")
         self.filter = operations.getFilter()
-        self.filterValue = int(operations.getFilterValue())
         self.varName = operations.getVarName()
         self.filterVarName = operations.getFilterVarName()
+        if(self.filterVarName!="None"):
+            self.filterValue = int(operations.getFilterValue())
         if(self.operation == "SELECT"):
             self.results = pd.DataFrame()
         else:
@@ -178,8 +179,6 @@ class PerformOperation:
 
         self.variable = operations.getVarData()
         self.filterVariable = operations.getFilterData()
-        print("******FILTER:")
-        print(self.filterVarName)
         if(self.filterVarName=="None"):
             self.df = self.variable.to_frame(name=self.varName)
         else:
@@ -189,15 +188,10 @@ class PerformOperation:
 
 
     def performFilter(self):
-        print(self.df)
-        print(self.df.columns)
         if(self.filterVarName=="None"):
-            self.performOperation(self.df)
+            self.performOperation(self.df[self.varName])
         else:
             filtered = []
-            print("*****FILTER VALUE:")
-            print(type(self.filterValue))
-            print(self.filterValue)
             if(self.filter==">"):
                 for i in range(len(self.df)):
                     if(self.filterVariable[i] > self.filterValue):
@@ -218,9 +212,13 @@ class PerformOperation:
                 for i in range(len(self.df)):
                     if(self.filterVariable[i] < self.filterValue):
                         filtered.append(self.variable[i])
-            else:
+            elif(self.filter==">="):
                 for i in range(len(self.df)):
                     if(self.filterVariable[i] >= self.filterValue):
+                        filtered.append(self.variable[i])
+            else:
+                for i in range(len(self.df)):
+                    if(self.filterVariable[i] != self.filterValue):
                         filtered.append(self.variable[i])
             self.performOperation(filtered)
 
@@ -228,14 +226,16 @@ class PerformOperation:
     def performOperation(self, filtered):
         # print(filtered)
         data = filtered
+        print(type(data))
         if(self.operation=="MAX"):
-            for i in len(data):
+            max=data[0]
+            for i in range(len(data)):
                 if(data[i]>max):
                     max=data[i]
             self.results = float(max)
         elif(self.operation=="MIN"):
             min=data[0]
-            for i in len(data):
+            for i in range(len(data)):
                 if(data[i]<min):
                     min=data[i]
             self.results = float(min)
@@ -247,7 +247,9 @@ class PerformOperation:
         elif(self.operation=="MEDIAN"):
             self.results = float(np.median(data))
         elif(self.operation=="MODE"):
-            self.results = float(data.mode())
+            data=pd.DataFrame(filtered)
+            mode = data.mode()
+            self.results=float(mode.iloc[0])
         elif(self.operation=="STDev"):
             self.results = float(np.std(data))
         elif(self.operation=="SELECT"):
@@ -262,16 +264,19 @@ class PerformOperation:
         return self.operation
     
     def getFilter(self):
-        return self.filter
+        if(self.filterVarName!="None"):
+            return self.filter
 
     def getFilterValue(self):
-        return self.filterValue
+        if(self.filterVarName!="None"):
+            return self.filterValue
 
     def getVarData(self):
         return self.variable
     
     def getFilterData(self):
-        return self.filterVariable
+        if(self.filterVarName!="None"):
+            return self.filterVariable
     
     def getString(self):
         return self.string

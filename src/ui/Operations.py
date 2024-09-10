@@ -87,6 +87,9 @@ class SingleFileOperations:
         self.whereCat = ["=", "!="]
 
         # print("operations.__init__() operation combobox")
+        if(self.filterVarName=="None"):
+            self.numOperations.remove("SELECT")
+            self.catOperations.remove("SELECT")
         if(isinstance(self.varData, str)):
             self.operationOps = ttk.Combobox(self.root, values=self.catOperations)
         else:
@@ -160,8 +163,6 @@ class SingleFileOperations:
                 self.errorLabel.grid(row=3, column=0, padx=2, pady=2)
             self.filterValues.grid_forget()
             self.submitButton3.grid_forget()
-            print("******FILTER VALUE INPUT:")
-            print(self.filterValue)
             self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
             self.completeButton.grid(row=1, column=0, padx=2, pady=2)
         else:
@@ -173,8 +174,6 @@ class SingleFileOperations:
         self.root.destroy()
         
     def getOperation(self):
-        print("*****OPERATION1: ")
-        print(self.operation)
         return self.operation
 
     def getFilter(self):

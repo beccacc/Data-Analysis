@@ -172,8 +172,12 @@ class DisplayResultsOne:
     
 
     def showResults(self):
-        # print(type(self.results))
         print("RESULTS:")
-        print(self.results)
+        if(self.operation=="SELECT"):
+            print(len(self.results))
+        else:
+            print(self.results)
+        
+        
         
     
