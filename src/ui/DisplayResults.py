@@ -186,11 +186,12 @@ class DisplayResultsOne:
             txt="Showing all instances of " + self.varName + " where " + self.filterVarName + " " + self.filter + " " + str(self.filterValue) + ":"
             tk.Label(self.root, text=txt).grid(row=0, column=0, padx=2, pady=2)
             resultsList = tk.Listbox(self.root)
-            resultsList.insert(self.results)
+            for r in self.results:
+                resultsList.insert(tk.END, r)
             resultsList.grid(row=1, column=0, padx=2, pady=2)
-            scrollbar = tk.Scrollbar(self.root)
-            scrollbar.grid(row=1, column=1, padx=2, pady=2)
-            resultsList.config(yscrollcommand = scrollbar.set)
-            scrollbar.config(command = resultsList.yview)
+            # scrollbar = tk.Scrollbar(self.root)
+            # scrollbar.grid(row=1, column=1, padx=2, pady=2)
+            # resultsList.config(yscrollcommand = scrollbar.set)
+            # scrollbar.config(command = resultsList.yview)
         
     
