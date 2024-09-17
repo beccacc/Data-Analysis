@@ -101,6 +101,7 @@ class ChooseVariables:
         for var in self.varList:
             if isinstance(self.data[var].iloc[1], (int, float, np.integer)):
                 self.indVarOptions.append(var)
+            else:
                 self.depVarOptions.append(var)
     
     def TTest(self):

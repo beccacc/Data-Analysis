@@ -3,28 +3,18 @@ import numpy as np
 import scipy.stats as stats
 from statsmodels.multivariate.manova import MANOVA
 from sklearn import linear_model as lm
-
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-# from ChooseVariables import ChooseVariables
-
+# from sklearn.metrics import classification_report, confusion_matrix
 
 class PerformAnalysis:
     def __init__(self, chooseVariables, operation):
         self.indVar = chooseVariables.getIndVar()
         self.depVar = chooseVariables.getDepVar()
         self.operation = operation.getOperation()
-        print("*****OPERATION: " + self.operation)
         self.data = chooseVariables.getDataset()
         if(self.operation == "One-Tail T-Test" or self.operation == "ANOVA" or self.operation == "MANOVA"):
             self.confidence = operation.getConfidence()
-            print("*****CONFIDENCE:")
-            print(self.confidence)
-            print(type(self.confidence))
         if(self.operation == "Two-Tail T-Test"):
             self.confidence = operation.getConfidence()*2
-            print("*****CONFIDENCE:")
-            print(self.confidence)
-            print(type(self.confidence))
         self.results = []
         self.performOperation()
 
@@ -62,10 +52,6 @@ class PerformAnalysis:
         dof = dofNum / dofDenom
         pVal = stats.t.sf(abs(tVal), dof)
         self.results = [self.operation, self.indVar, self.depVar, pVal, self.confidence]
-        # if():
-        #     print("reject null: significant difference")
-        # else:
-        #     print("do not reject null: no significant difference")
 
 
 
@@ -88,7 +74,6 @@ class PerformAnalysis:
             SSB = SSB + size*(sampleMean-overallMean)**2
             for val in depData:
                 SSE = SSE + (val - sampleMean)**2
-        # SST = SSB + SSE
         df1 = len(self.depVar) - 1
         df2 = sampleSize - len(self.depVar)
         MSB = SSB/df1
@@ -96,10 +81,6 @@ class PerformAnalysis:
         fVal = MSB/MSE
         fCrit = stats.f.ppf(self.confidence, df1, df2)
         self.results = [self.operation, self.indVar, self.depVar, fVal, fCrit]
-        # if(fVal>fCrit):
-        #     print("reject null: significant difference")
-        # else:
-        #     print("do not reject null: no significant difference")
 
     # def MANOVA(self):
     #     independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
@@ -116,21 +97,23 @@ class PerformAnalysis:
     #     result = manova.mv_test()
 
     def logReg(self):
+        #TODO: FIGURE OUT OUTPUT OF .COEF_
         independent = self.data.loc[:,self.indVar]
-        dependent = self.data.loc[:, self.depVar]
-        logr = lm.LogisticRegression()
-        logr.fit(independent, dependent)
-        pVal = np.exp(logr.coef_)
+        dependent = np.array(self.data.loc[:, self.depVar])
+        ind = np.array(independent).reshape(-1,1)
+        logR = lm.LogisticRegression(solver='liblinear', random_state=0)
+        logR.fit(ind, dependent)
+        pVal = logR.coef_
         self.results = [self.operation, self.indVar, self.depVar, pVal]
-        # print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
 
     def simpleReg(self):
         independent = self.data.loc[:,self.indVar]
-        dependent = self.data.loc[:, self.depVar]
-        # simpleR = lm.LinearRegression()
-        slope, intercept, r_value, p_value, std_err = stats.linregress(independent, dependent)
-        self.results = [self.operation, self.indVar, self.depVar, slope]
-        # print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
+        dependent = np.array(self.data.loc[:, self.depVar])
+        ind = np.array(independent).reshape(-1,1)
+        simpleR = lm.LinearRegression()
+        simpleR.fit(ind, dependent)
+        pVal = simpleR.coef_
+        self.results = [self.operation, self.indVar, self.depVar, pVal]
             
     def multiReg(self):
         independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
@@ -142,7 +125,6 @@ class PerformAnalysis:
         multiR = lm.LinearRegression()
         multiR.fit(independents, dependent)
         pVals = multiR.coef_
-        # outputString = ""
         self.results = [self.operation, self.indVar, self.depVar, pVals]
         # for i in range(len(self.indVar)):
         #     outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
@@ -150,11 +132,7 @@ class PerformAnalysis:
 
     def correlation(self):
         independent = self.data.loc[:,self.indVar]
-        # print("********INDEPENDENT*********: ")
-        # print(independent)
         dependent = self.data.loc[:, self.depVar]
-        # print("********DEPENDENT*********: ")
-        # print(dependent)
         if(len(independent) > len(dependent)):
             extra = len(independent) - len(dependent)
             independent.drop(independent.tail(extra).index, inplace = True)
@@ -163,7 +141,6 @@ class PerformAnalysis:
             dependent.drop(dependent.tail(extra).index, inplace = True)
         corr = stats.pearsonr(independent, dependent).statistic
         self.results = [self.operation, self.indVar, self.depVar, corr]
-        # print("The Pearson correlation coefficient for " + independent + " and " + dependent + " is " + str(corr))
     
     def getResults(self):
         return self.results
@@ -172,7 +149,6 @@ class PerformOperation:
     def __init__(self, operations):
         self.operation = operations.getOperation()
         self.string = operations.getString()
-        # print("*****OPERATION: " + self.operation + " in PerformOperation.__init__()")
         self.filter = operations.getFilter()
         self.varName = operations.getVarName()
         self.filterVarName = operations.getFilterVarName()
@@ -246,10 +222,7 @@ class PerformOperation:
                     min=data[i]
             self.results = float(min)
         elif(self.operation=="MEAN"):
-            # print("operation = MEAN")
-            # print(data)
             self.results = float(np.mean(data))
-            # print(self.results)
         elif(self.operation=="MEDIAN"):
             self.results = float(np.median(data))
         elif(self.operation=="MODE"):
@@ -265,8 +238,6 @@ class PerformOperation:
         return self.results
 
     def getOperation(self):
-        # print("*****OPERATION2: ")
-        # print(self.operation)
         return self.operation
     
     def getFilter(self):

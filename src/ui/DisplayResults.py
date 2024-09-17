@@ -28,12 +28,11 @@ class DisplayResultsMulti:
             indVarLabel = tk.Label(self.root, text="Independent Variables:")
             indVarLabel.grid(row=1, column=0, pady=2)
             for i in range(len(self.indVar)):
-                tk.Label(self.root, text=self.indVar[i]).grid(row=i+1, column=0, pady=2)
+                tk.Label(self.root, text=self.indVar[i]).grid(row=i+2, column=0, pady=2)
             depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
-            depVarLabel.grid(row=len(self.indVar)+1, column=0, pady=2)
+            depVarLabel.grid(row=len(self.indVar)+2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVals: self.multiReg(p))
             viewButton.grid(row = len(self.indVar) + 3, column=0, pady=2)
-            # self.multiReg(pVals)
         elif(self.operation == "Simple Regression"):
             pVal = self.results[3]
             indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
@@ -42,7 +41,6 @@ class DisplayResultsMulti:
             depVarLabel.grid(row=2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVal: self.simpleReg(p))
             viewButton.grid(row = 4, column=0, pady=2)
-            # self.simpleReg(pVal)
         elif(self.operation == "Logistic Regression"):
             pVal = self.results[3]
             indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
@@ -51,7 +49,6 @@ class DisplayResultsMulti:
             depVarLabel.grid(row=2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVal: self.logReg(p))
             viewButton.grid(row = 4, column=0, pady=2)
-            # self.logReg(pVal)
         elif(self.operation == "One-Tail T-Test" or self.operation == "Two-Tail T-Test"):
             pVal = self.results[3]
             conf = float(self.results[4])
@@ -61,7 +58,6 @@ class DisplayResultsMulti:
             depVarLabel.grid(row=2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda p=pVal, c=conf: self.TTest(p, c))
             viewButton.grid(row = 4, column=0, pady=2)
-            # self.TTest(pVal, conf)
         elif(self.operation == "ANOVA"):
             fVal = self.results[3]
             fCrit = self.results[4]
@@ -73,7 +69,6 @@ class DisplayResultsMulti:
                 tk.Label(self.root, text=self.depVar[i]).grid(row=i+2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda fV = fVal, fC=fCrit: self.ANOVA(fV, fC))
             viewButton.grid(row = len(self.depVar) + 4, column=0, pady=2)
-            # self.TTest(fVal, fCrit)
         # elif(self.operation == "MANOVA"):
         else:
             corr = self.results[3]
@@ -93,7 +88,11 @@ class DisplayResultsMulti:
         for i in range(len(self.indVar)):
             var = self.indVar[i]
             prob = pVals[i]
-            label = tk.Label(self.root, text = "As " + var + " increases by 1, " + dep + " increases by " + prob)
+            if prob<0:
+                prob = prob*-1
+                label = tk.Label(self.root, text = "As " + var + " increases by 1, " + dep + " decreases by " + str(prob))
+            else:
+                label = tk.Label(self.root, text = "As " + var + " increases by 1, " + dep + " increases by " + str(prob))
             label.grid(row = len(self.indVar) + 5 + i, column=0, pady=2)
     
     def simpleReg(self, slope):
