@@ -96,18 +96,22 @@ class DisplayResultsMulti:
             label = tk.Label(self.root, text = "As " + var + " increases by 1, " + dep + " increases by " + prob)
             label.grid(row = len(self.indVar) + 5 + i, column=0, pady=2)
     
-    def simpleReg(self, pVal):
+    def simpleReg(self, slope):
         for w in self.root.winfo_children():
             if isinstance(w, tk.Button):
                w.grid_forget()
-        label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + pVal)
+        if(slope<0):
+            slope = slope*-1
+            label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " decreases by " + str(slope))
+        else:
+            label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + str(slope))
         label.grid(row = 6, column=0, pady=2)
 
     def logReg(self, pVal):
         for w in self.root.winfo_children():
             if isinstance(w, tk.Button):
                w.grid_forget()
-        label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + pVal)
+        label = tk.Label(self.root, text = "As " + self.indVar + " increases by 1, " + self.depVar + " increases by " + str(pVal))
         label.grid(row = 6, column=0, pady=2)
     
     def TTest(self, pVal, conf):

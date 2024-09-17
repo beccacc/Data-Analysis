@@ -127,10 +127,9 @@ class PerformAnalysis:
     def simpleReg(self):
         independent = self.data.loc[:,self.indVar]
         dependent = self.data.loc[:, self.depVar]
-        simpleR = lm.LinearRegression()
-        simpleR.fit(independent, dependent)
-        pVal = simpleR.coef_
-        self.results = [self.operation, self.indVar, self.depVar, pVal]
+        # simpleR = lm.LinearRegression()
+        slope, intercept, r_value, p_value, std_err = stats.linregress(independent, dependent)
+        self.results = [self.operation, self.indVar, self.depVar, slope]
         # print("As " + independent + " increases by 1, " + dependent + " increases by " + str(pVal))
             
     def multiReg(self):
