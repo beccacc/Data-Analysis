@@ -13,11 +13,18 @@ class PerformAnalysis:
         self.indVar = chooseVariables.getIndVar()
         self.depVar = chooseVariables.getDepVar()
         self.operation = operation.getOperation()
+        print("*****OPERATION: " + self.operation)
         self.data = chooseVariables.getDataset()
-        if(self.operation == "One-tail T-Test" or self.operation == "ANOVA" or self.operation == "MANOVA"):
+        if(self.operation == "One-Tail T-Test" or self.operation == "ANOVA" or self.operation == "MANOVA"):
             self.confidence = operation.getConfidence()
-        if(self.operation == "Two-tail T-Test"):
+            print("*****CONFIDENCE:")
+            print(self.confidence)
+            print(type(self.confidence))
+        if(self.operation == "Two-Tail T-Test"):
             self.confidence = operation.getConfidence()*2
+            print("*****CONFIDENCE:")
+            print(self.confidence)
+            print(type(self.confidence))
         self.results = []
         self.performOperation()
 
@@ -28,7 +35,7 @@ class PerformAnalysis:
             self.simpleReg()
         elif(self.operation == "Logistic Regression"):
             self.logReg()
-        elif(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
+        elif(self.operation == "One-Tail T-Test" or self.operation == "Two-Tail T-Test"):
             self.TTest()
         elif(self.operation == "ANOVA"):
             self.ANOVA()
@@ -48,14 +55,14 @@ class PerformAnalysis:
         indNum = len(independent)
         depNum = len(dependent)
         tVal = (indMean-depMean)/np.sqrt((indVariance/indNum) + (depVariance/depNum))
-        i = indVariance^2 / indNum
-        d = depVariance^2 / depNum
-        dofNum = (i + d)^2
-        dofDenom = (i^2)/(indNum - 1) + (d^2)/(depNum - 1)
+        i = (indVariance**2) / indNum
+        d = (depVariance**2) / depNum
+        dofNum = (i + d)**2
+        dofDenom = (i**2)/(indNum - 1) + (d**2)/(depNum - 1)
         dof = dofNum / dofDenom
         pVal = stats.t.sf(abs(tVal), dof)
         self.results = [self.operation, self.indVar, self.depVar, pVal, self.confidence]
-        # if(pVal < self.confidence):
+        # if():
         #     print("reject null: significant difference")
         # else:
         #     print("do not reject null: no significant difference")
@@ -78,9 +85,9 @@ class PerformAnalysis:
             size = len(depData)
             sampleSize = sampleSize + size
             sampleMean = np.mean(depData)
-            SSB = SSB + size*(sampleMean-overallMean)^2
+            SSB = SSB + size*(sampleMean-overallMean)**2
             for val in depData:
-                SSE = SSE + (val - sampleMean)^2
+                SSE = SSE + (val - sampleMean)**2
         # SST = SSB + SSE
         df1 = len(self.depVar) - 1
         df2 = sampleSize - len(self.depVar)

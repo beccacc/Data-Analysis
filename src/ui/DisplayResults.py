@@ -7,6 +7,7 @@ class DisplayResultsMulti:
         self.results = performOperation.getResults()
         print("  ********RESULTS******: ")
         print(self.results)
+        self.str = ""
         self.operation = self.results[0]
         self.indVar = self.results[1]
         self.depVar = self.results[2]
@@ -15,6 +16,7 @@ class DisplayResultsMulti:
         self.root.title("Data Analysis Results")
         self.operationLabel = tk.Label(self.root, text="Performing " + self.operation)
         self.operationLabel.grid(row=0, column=0, pady=2)
+        self.explainResultsButton = tk.Button(self.root, text="Explain Results", command=self.explainResults)
         self.display()
 
         self.root.mainloop()
@@ -52,7 +54,7 @@ class DisplayResultsMulti:
             # self.logReg(pVal)
         elif(self.operation == "One-Tail T-Test" or self.operation == "Two-Tail T-Test"):
             pVal = self.results[3]
-            conf = self.results[4]
+            conf = float(self.results[4])
             indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
             indVarLabel.grid(row=1, column=0, pady=2)
             depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
@@ -114,11 +116,19 @@ class DisplayResultsMulti:
                w.grid_forget()
         nullLabel = tk.Label(self.root, text="Null Hypothesis: Average " + self.indVar + " is the same as average " + self.depVar)
         nullLabel.grid(row=6, column=0, pady=2)
+        print(type(pVal))
+        print(type(conf))
         if(pVal<conf):
             label = tk.Label(self.root, text = "Reject Null Hypothesis: there is a significant difference between average " + self.indVar + " and average " + self.depVar)
+            self.txt = "Because our pValue(" + str(pVal) + ") is less than our confidence(" + str(conf) + "), we reject our Null Hypothesis.\n"
+            self.txt = self.txt + "Our data shows that there is a significant difference between average " + self.indVar + " and average " + self.depVar
         else:
             label = tk.Label(self.root, text = "Do not reject Null Hypothesis: no proof of a significant difference between average " + self.indVar + " and average " + self.depVar)
+            self.txt = "Because our pValue(" + str(pVal) + ") is greater than our confidence(" + str(conf) + "), we cannot reject our Null Hypothesis.\n"
+            self.txt = self.txt + "Our data does not show a significant difference between average " + self.indVar + " and average " + self.depVar + "\n"
+            self.txt = self.txt + "However, there is not enough information to prove that the averages are equal."
         label.grid(row = 8, column=0, pady=2)
+        self.explainResultsButton.grid(row=9, column=0, pady=2)
     
     def ANOVA(self, fVal, fCrit):
         for w in self.root.winfo_children():
@@ -134,9 +144,15 @@ class DisplayResultsMulti:
         nullLabel.grid(row = len(self.indVar) + 6, column = 0, pady=2)
         if(fVal>fCrit):
             label = tk.Label(self.root, text= "Reject Null Hypothesis: " + preLabelText + " are different for given " + self.indVar)
+            self.txt = "Because our fValue(" + str(fVal) + ") is greater than our fCritical(" + str(fCrit) + "), we reject our Null Hypothesis.\n"
+            self.txt = self.txt + "Our data shows that there is a significant difference between " + preLabelText + " for given " + self.indVar
         else:
             label = tk.Label(self.root, text= "Do not reject Null Hypothesis: no proof of significant difference in " + preLabelText + " for given " + self.indVar)
+            self.txt = "Because our fValue(" + str(fVal) + ") is less than our fCritical(" + str(fCrit) + "), we cannot reject our Null Hypothesis.\n"
+            self.txt = self.txt + "Our data does not show a significant difference between " + preLabelText + " for given " + self.indVar + "\n"
+            self.txt = self.txt + "However, there is not enough information to prove that the averages are equal for given " + self.indVar
         label.grid(row = len(self.indVar) + 8, column = 0, pady=2)
+        self.explainResultsButton.grid(row = len(self.indVar) + 9, column = 0, pady=2)
         # print("ANOVA")
     
     def correlation(self, corr):
@@ -145,6 +161,25 @@ class DisplayResultsMulti:
                w.grid_forget()
         label = tk.Label(self.root, text = "The Pearson correlation coefficient for " + self.indVar + " and " + self.depVar + " is " + str(corr))
         label.grid(row = 6, column=0, pady=2)
+
+
+    def explainResults(self):
+        for w in self.root.winfo_children():
+            w.grid_forget()
+        if(self.operation == "One-Tail T-Test" or self.operation == "Two-Tail T-Test"):
+            tk.Label(self.root, text="Null Hypothesis: Average " + self.indVar + " is the same as average " + self.depVar).grid(row=0, column=0, padx=2, pady=2)
+            tk.Label(self.root, text=self.txt).grid(row = len(self.indVar) + 9, column = 0, pady=2)
+        elif(self.operation == "ANOVA"):
+            labelText = "Null Hypothesis: Average "
+            for i in range(len(self.depVar)):
+                if(i!=len(self.depVar)-1):
+                    labelText = labelText + self.depVar[i] + ", "
+                else:
+                    labelText = labelText + "and " + self.depVar[i] + " are equal for given " + self.indVar
+            tk.Label(self.root, text=labelText).grid(row = 0, column = 0, pady=2)
+            tk.Label(self.root, text=self.txt).grid(row = 1, column = 0, pady=2)
+            
+
 
 class DisplayResultsOne:
     def __init__(self, performOperation):

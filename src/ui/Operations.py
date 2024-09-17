@@ -188,7 +188,8 @@ class SingleFileOperations:
                 self.filterValues.grid_forget()
                 self.submitButton3.grid_forget()
                 self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
-                self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+                self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
+                self.completeButton.grid(row=2, column=0, padx=2, pady=2)
 
         
 
