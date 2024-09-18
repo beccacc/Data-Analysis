@@ -19,20 +19,22 @@ class SelectFiles:
         # print("root created")
         self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
         self.viewButton.grid(row=0, column=0, pady=2)
-        # print("viewButton created")
+        self.submitButton = tk.Button(self.root, text="Submit", command=self.completeSelection)
         self.root.mainloop()
 
     def viewFiles(self):
         self.viewButton.grid_forget()
         fileList = self.fileUpload.getFileList()
-        # numFiles = len(fileList)
-        viewLabel = tk.Label(self.root, text="Choose files: ")
-        viewLabel.grid(row=0, column=0, padx=2, pady=2)
+        tk.Label(self.root, text="Select Files").grid(row=0, column=0, columnspan=2, padx=2, pady=2)
         for i in range(len(fileList)):
-            button = Button(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
-            button.grid(row=i+1, column=0, pady=2)
-        selectedFilesLabel = tk.Label(self.root, text="Selected Files:")
-        selectedFilesLabel.grid(row=0, column=3, padx=2, pady=2)
+            button = ttk.Checkbutton(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
+            button.grid(row=i+1, column=0, columnspan=2, padx=2, pady=2)
+            self.submitButton.grid(row=len(fileList)+1, column=0, padx=2, pady=2)
+        # viewLabel = tk.Label(self.root, text="Choose files: ")
+        # viewLabel.grid(row=0, column=0, padx=2, pady=2)
+        # for i in range(len(fileList)):
+        #     button = Button(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
+        #     button.grid(row=i+1, column=0, pady=2)
 
 
 
@@ -40,13 +42,8 @@ class SelectFiles:
         if file not in self.selectedFiles:
             self.selectedFiles.append(file)
             print(f"Added {file[0]} to selected files.")
-            fileLabel = tk.Label(self.root, text = file[0])
-            fileLabel.grid(row=len(self.selectedFiles), column=3, pady=2, padx=2)
         else:
             print(f"{file[0]} is already in the list.")
-        if(len(self.selectedFiles)>0):
-            completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
-            completeButton.grid(row=0, column=4, pady=2, padx=2)
 
     def completeSelection(self):
         self.root.destroy()

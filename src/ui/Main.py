@@ -29,11 +29,6 @@ def main():
         performOperation = PerformOperation(operation)
         ops = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
         displayResults = DisplayResultsOne(performOperation)
-
-    # chooseUsage = ChooseUsage()
-    
- 
-    # chooseVariables.chooseVars()
     
 
 

@@ -49,6 +49,7 @@ class ChooseVariables:
 
 
     def getData(self):
+        print(self.fileList[0])
         data = pd.read_csv(self.fileList[0][1])
         for i in range(len(self.fileList)):
             if(i!=0):
