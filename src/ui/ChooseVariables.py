@@ -122,15 +122,6 @@ class ChooseVariables:
         else:
             self.indVarOptionsList.grid(row=0, column=0, columnspan=2, padx=2, pady=2)
             self.indSubmitButton.grid(row=1, column=0, padx=2, pady=2)
-        if(self.operation == "MANOVA" or self.operation == "ANOVA"):
-            tk.Label(self.root, text="Choose Dependent Variables").grid(row=0, column=2, columnspan=2, padx=2, pady=2)
-            for i in range(len(self.depVarOptions)):
-                button = ttk.Checkbutton(self.root, text=self.depVarOptions[i], command=lambda v=self.depVarOptions[i]: self.setDepVars(v))
-                button.grid(row=i+1, column=2, columnspan=2, padx=2, pady=2)
-                self.depSubmitButton.grid(row=len(self.depVarOptions)+1, column=2, padx=2, pady=2)
-        else:
-            self.depVarOptionsList.grid(row=0, column=2, columnspan=2, padx=2, pady=2)
-            self.depSubmitButton.grid(row=1, column=2, padx=2, pady=2)
 
     def setVars(self):
         if(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
@@ -162,29 +153,38 @@ class ChooseVariables:
             self.depVars.append(var)
 
     def setInd(self):
-        self.indCompleted = True
         if(self.operation != "MANOVA" and self.operation != "Multiple Regression"):
             self.indVar = self.indVarOptionsList.get()
             self.indVarOptionsList.grid_forget()
+        for w in self.root.winfo_children():
+            w.grid_forget()
+        if(self.operation != "MANOVA" and self.operation != "Multiple Regression"):
+            tk.Label(self.root, text="Independent Variable:").grid(row=0, column=0, padx=2, pady=2)
+            tk.Label(self.root, text=self.indVar).grid(row=1, column=0, padx=2, pady=2)
         else:
-            for w in self.root.winfo_children():
-                if w.grid_info()['column']==0:
-                    w.grid_forget()
-        if(self.indCompleted and self.depCompleted):
-            self.root.destroy()
+            tk.Label(self.root, text="Independent Variables:").grid(row=0, column=0, padx=2, pady=2)
+            for i in range(len(self.indVars)):
+                tk.Label(self.root, text=self.indVars[i]).grid(row=i+1, column=0, padx=2, pady=2)
+        if(self.operation == "MANOVA" or self.operation == "ANOVA"):
+            tk.Label(self.root, text="Choose Dependent Variables").grid(row=0, column=2, columnspan=2, padx=2, pady=2)
+            for i in range(len(self.depVarOptions)):
+                button = ttk.Checkbutton(self.root, text=self.depVarOptions[i], command=lambda v=self.depVarOptions[i]: self.setDepVars(v))
+                button.grid(row=i+1, column=2, columnspan=2, padx=2, pady=2)
+                self.depSubmitButton.grid(row=len(self.depVarOptions)+1, column=2, padx=2, pady=2)
+        else:
+            self.depVarOptionsList.grid(row=0, column=2, columnspan=2, padx=2, pady=2)
+            self.depSubmitButton.grid(row=1, column=2, padx=2, pady=2)
+        
 
 
     def setDep(self):
-        self.depCompleted = True
         if(self.operation != "MANOVA" and self.operation != "ANOVA"):
             self.depVar = self.depVarOptionsList.get()
             self.depVarOptionsList.grid_forget()
         else:
             for w in self.root.winfo_children():
-                if w.grid_info()['column']==1:
-                    w.grid_forget()
-        if(self.indCompleted and self.depCompleted):
-            self.root.destroy()
+                w.grid_forget()
+        self.root.destroy()
 
     def getIndVar(self):
         if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):

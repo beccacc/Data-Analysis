@@ -66,7 +66,7 @@ class DisplayResultsMulti:
             depVarLabel = tk.Label(self.root, text="Dependent Variables: ")
             depVarLabel.grid(row=2, column=0, pady=2)
             for i in range(len(self.depVar)):
-                tk.Label(self.root, text=self.depVar[i]).grid(row=i+2, column=0, pady=2)
+                tk.Label(self.root, text=self.depVar[i]).grid(row=i+3, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda fV = fVal, fC=fCrit: self.ANOVA(fV, fC))
             viewButton.grid(row = len(self.depVar) + 4, column=0, pady=2)
         # elif(self.operation == "MANOVA"):
@@ -143,7 +143,7 @@ class DisplayResultsMulti:
                 preLabelText = preLabelText + self.depVar[i] + ", "
             else:
                 preLabelText = preLabelText + "and " + self.depVar[i]
-        nullLabel = tk.Label(self.root, text="Null Hypothesis: " + preLabelText +  + " are equal for given " + self.indVar)
+        nullLabel = tk.Label(self.root, text="Null Hypothesis: " + preLabelText + " are equal for given " + self.indVar)
         nullLabel.grid(row = len(self.indVar) + 6, column = 0, pady=2)
         if(fVal>fCrit):
             label = tk.Label(self.root, text= "Reject Null Hypothesis: " + preLabelText + " are different for given " + self.indVar)

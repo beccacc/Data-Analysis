@@ -79,7 +79,7 @@ class PerformAnalysis:
         MSB = SSB/df1
         MSE = SSE/df2
         fVal = MSB/MSE
-        fCrit = stats.f.ppf(self.confidence, df1, df2)
+        fCrit = stats.f.ppf(float(self.confidence), df1, df2)
         self.results = [self.operation, self.indVar, self.depVar, fVal, fCrit]
 
     # def MANOVA(self):
