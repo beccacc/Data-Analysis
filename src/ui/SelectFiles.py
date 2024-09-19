@@ -12,6 +12,7 @@ class SelectFiles:
     def __init__(self, fileUpload):
         self.selectedFiles = []
         self.fileUpload = fileUpload
+        self.fileList = self.fileUpload.getFileList()
         print("fileUpload in SelectFiles")
         self.root = tk.Tk()
         self.root.title("Select your Files")
@@ -20,16 +21,16 @@ class SelectFiles:
         self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
         self.viewButton.grid(row=0, column=0, pady=2)
         self.submitButton = tk.Button(self.root, text="Submit", command=self.completeSelection)
+        self.errorMessage = tk.Label(self.root, text="Please Select a File", fg="#FF0000")
         self.root.mainloop()
 
     def viewFiles(self):
         self.viewButton.grid_forget()
-        fileList = self.fileUpload.getFileList()
         tk.Label(self.root, text="Select Files").grid(row=0, column=0, columnspan=2, padx=2, pady=2)
-        for i in range(len(fileList)):
-            button = ttk.Checkbutton(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
+        for i in range(len(self.fileList)):
+            button = ttk.Checkbutton(self.root, text=self.fileList[i][0], command=lambda f=self.fileList[i]: self.addToSelectedFiles(f))
             button.grid(row=i+1, column=0, columnspan=2, padx=2, pady=2)
-            self.submitButton.grid(row=len(fileList)+1, column=0, padx=2, pady=2)
+            self.submitButton.grid(row=len(self.fileList)+1, column=0, padx=2, pady=2)
         # viewLabel = tk.Label(self.root, text="Choose files: ")
         # viewLabel.grid(row=0, column=0, padx=2, pady=2)
         # for i in range(len(fileList)):
@@ -44,9 +45,15 @@ class SelectFiles:
             print(f"Added {file[0]} to selected files.")
         else:
             print(f"{file[0]} is already in the list.")
+            self.selectedFiles.remove(file)
+
 
     def completeSelection(self):
-        self.root.destroy()
+        if(len(self.selectedFiles)>0):
+            self.root.destroy()
+        else:
+            self.errorMessage.grid(row=len(self.fileList)+2, column=0)
+
 
     def getSelected(self):
         return fileSelected

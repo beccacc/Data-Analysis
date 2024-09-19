@@ -35,7 +35,7 @@ class ChooseVariables:
         
         self.root = tk.Tk()
         self.root.title("Select Variables")
-        self.root.geometry("500x250")
+        self.root.geometry("500x500")
         self.indVarOptionsList = ttk.Combobox(self.root, values=self.indVarOptions, width=22)
         self.indVarOptionsList.set("Choose an Independent Variable")
         self.depVarOptionsList = ttk.Combobox(self.root, values=self.depVarOptions, width=20)
@@ -44,6 +44,10 @@ class ChooseVariables:
         self.indSubmitButton = tk.Button(self.root, text="Submit", command=self.setInd)
         self.depSubmitButton = tk.Button(self.root, text="Submit", command=self.setDep)
         
+        self.errorMessage1 = tk.Label(self.root, text="Please Select Independent Variables", fg="#FF0000")
+        self.errorMessage2 = tk.Label(self.root, text="Please Select Dependent Variables", fg="#FF0000")
+
+
         self.display()
         self.root.mainloop()
 
@@ -161,6 +165,8 @@ class ChooseVariables:
         if(self.operation != "MANOVA" and self.operation != "Multiple Regression"):
             tk.Label(self.root, text="Independent Variable:").grid(row=0, column=0, padx=2, pady=2)
             tk.Label(self.root, text=self.indVar).grid(row=1, column=0, padx=2, pady=2)
+        elif(len(self.indVars)==0):
+            self.errorMessage1.grid(row=len(self.indVarOptions)+3, column=1, padx=2, pady=2)
         else:
             tk.Label(self.root, text="Independent Variables:").grid(row=0, column=0, padx=2, pady=2)
             for i in range(len(self.indVars)):
@@ -184,6 +190,8 @@ class ChooseVariables:
         else:
             for w in self.root.winfo_children():
                 w.grid_forget()
+            if(len(self.depVars)==0):
+                self.errorMessage2.grid(row=len(self.depVarOptions)+3, column=1, padx=2, pady=2)
         self.root.destroy()
 
     def getIndVar(self):

@@ -23,34 +23,46 @@ class MultiFileOperations:
         self.confidenceOptions.set("Choose a Confidence Level")
         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
         self.changeButton = tk.Button(self.root, text="Change Selection", command=self.changeSelection)
+        self.errorMessage1 = tk.Label(self.root, text="Please select an operation", fg="#FF0000")
+        self.errorMessage2 = tk.Label(self.root, text="Please select a confidence level", fg="#FF0000")
         self.root.mainloop()
 
 
     
     def retrieveOperation(self):
-        self.operation = self.operationOptions.get()
-        self.operationOptions.grid_forget()
-        self.submitButton1.grid_forget()
-        tk.Label(self.root, text="Selected Operation: " + self.operation).grid(row=0, column=0, padx=2, pady=2)
-        confOps = ["One-Tail T-Test", "Two-Tail T-Test", "ANOVA", "MANOVA"]
-        if(self.operation in confOps):
-            self.confidenceOptions.grid(row=1, column=0, padx=2, pady=2)
-            self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+        if(self.operationOptions.get()=="Choose an Operation"):
+            self.errorMessage1.grid(row=2, column=0, padx=2, pady=2)
         else:
-            self.completeButton.grid(row=1, column=0, padx=2, pady=2)
-            self.changeButton.grid(row=1, column=1, padx=2, pady=2)
+            self.errorMessage1.grid_forget()
+            self.operation = self.operationOptions.get()
+            self.operationOptions.grid_forget()
+            self.submitButton1.grid_forget()
+            tk.Label(self.root, text="Selected Operation: " + self.operation).grid(row=0, column=0, padx=2, pady=2)
+            confOps = ["One-Tail T-Test", "Two-Tail T-Test", "ANOVA", "MANOVA"]
+            if(self.operation in confOps):
+                self.confidenceOptions.grid(row=1, column=0, padx=2, pady=2)
+                self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+            else:
+                self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+                self.changeButton.grid(row=1, column=1, padx=2, pady=2)
             
     def retrieveConfidence(self):
-        self.confidence = self.confidenceOptions.get()
-        self.confidenceOptions.grid_forget()
-        self.submitButton2.grid_forget()
-        tk.Label(self.root, text="Selected Confidence: " + self.confidence).grid(row=1, column=0, padx=2, pady=2)
-        self.completeButton.grid(row=2, column=0, padx=2, pady=2)
-        self.changeButton.grid(row=2, column=1, padx=2, pady=2)
+        if(self.confidenceOptions.get()=="Choose a Confidence Level"):
+            self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
+        else:
+            self.confidence = self.confidenceOptions.get()
+            self.confidenceOptions.grid_forget()
+            self.submitButton2.grid_forget()
+            tk.Label(self.root, text="Selected Confidence: " + self.confidence).grid(row=1, column=0, padx=2, pady=2)
+            self.completeButton.grid(row=2, column=0, padx=2, pady=2)
+            self.changeButton.grid(row=2, column=1, padx=2, pady=2)
 
     def changeSelection(self):
         for w in self.root.grid_slaves(column=0):
             w.grid_forget()
+        self.changeButton.grid_forget()
+        self.operationOptions.set("Choose an Operation")
+        self.confidenceOptions.set("Choose a Confidence Level")
         self.operationOptions.grid(row=0, column=0, padx=2, pady=2)
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
         
@@ -77,7 +89,6 @@ class SingleFileOperations:
         self.data = chooseVariables.getData()
         self.varData = self.data[self.varName]
 
-        # print("operations.__init__() filterVarName")
         if(self.filterVarName != "None"):
             self.filterData = self.data[self.filterVarName]
 

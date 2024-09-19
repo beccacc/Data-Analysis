@@ -27,7 +27,7 @@ def main():
         chooseVariable = ChooseVariable(selectFile)
         operation = SingleFileOperations(chooseVariable, selectFile)
         performOperation = PerformOperation(operation)
-        ops = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
+        # ops = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
         displayResults = DisplayResultsOne(performOperation)
     
 
