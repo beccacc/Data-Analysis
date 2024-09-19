@@ -2,11 +2,6 @@ from FileUpload import FileUpload
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from operator import itemgetter
-
-
-fileSelected = False
-fileUpload = FileUpload()
 
 class SelectFiles:
     def __init__(self, fileUpload):
@@ -17,7 +12,6 @@ class SelectFiles:
         self.root = tk.Tk()
         self.root.title("Select your Files")
         self.root.geometry("400x250")
-        # print("root created")
         self.viewButton = tk.Button(self.root, text="View Files", command=self.viewFiles)
         self.viewButton.grid(row=0, column=0, pady=2)
         self.submitButton = tk.Button(self.root, text="Submit", command=self.completeSelection)
@@ -31,13 +25,6 @@ class SelectFiles:
             button = ttk.Checkbutton(self.root, text=self.fileList[i][0], command=lambda f=self.fileList[i]: self.addToSelectedFiles(f))
             button.grid(row=i+1, column=0, columnspan=2, padx=2, pady=2)
             self.submitButton.grid(row=len(self.fileList)+1, column=0, padx=2, pady=2)
-        # viewLabel = tk.Label(self.root, text="Choose files: ")
-        # viewLabel.grid(row=0, column=0, padx=2, pady=2)
-        # for i in range(len(fileList)):
-        #     button = Button(self.root, text=fileList[i][0], command=lambda f=fileList[i]: self.addToSelectedFiles(f))
-        #     button.grid(row=i+1, column=0, pady=2)
-
-
 
     def addToSelectedFiles(self, file):
         if file not in self.selectedFiles:
@@ -47,16 +34,11 @@ class SelectFiles:
             print(f"{file[0]} is already in the list.")
             self.selectedFiles.remove(file)
 
-
     def completeSelection(self):
         if(len(self.selectedFiles)>0):
             self.root.destroy()
         else:
             self.errorMessage.grid(row=len(self.fileList)+2, column=0)
-
-
-    def getSelected(self):
-        return fileSelected
 
     def getSelection(self):
         return self.selectedFiles

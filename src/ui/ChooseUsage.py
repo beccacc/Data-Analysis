@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 class ChooseUsage:
     def __init__(self):
         self.usage = ""

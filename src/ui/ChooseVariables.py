@@ -3,15 +3,6 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-# from Operations import MultiFileOperations
-# from SelectFiles import SelectFiles
-# import sys
-# import os
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-# from model import ReadFile
-
-# selectFiles = SelectFiles()
-# operations = Operations()
 
 class ChooseVariables:
     def __init__(self, selectFiles, operations):
@@ -47,10 +38,8 @@ class ChooseVariables:
         self.errorMessage1 = tk.Label(self.root, text="Please Select Independent Variables", fg="#FF0000")
         self.errorMessage2 = tk.Label(self.root, text="Please Select Dependent Variables", fg="#FF0000")
 
-
         self.display()
         self.root.mainloop()
-
 
     def getData(self):
         print(self.fileList[0])
@@ -64,7 +53,6 @@ class ChooseVariables:
     
     def getVarList(self):
         return self.data.columns
-        
 
     def getConfidence(self):
         if(self.operation == "One-tail T-Test" or self.operation == "Two-tail T-Test"):
@@ -115,7 +103,6 @@ class ChooseVariables:
                 self.depVarOptions.append(var)
                 self.indVarOptions.append(var)
                 
-
     def display(self):
         if(self.operation == "Multiple Regression" or self.operation == "MANOVA"):
             tk.Label(self.root, text="Choose Independent Variables").grid(row=0, column=0, columnspan=2, padx=2, pady=2)
@@ -180,8 +167,6 @@ class ChooseVariables:
         else:
             self.depVarOptionsList.grid(row=0, column=2, columnspan=2, padx=2, pady=2)
             self.depSubmitButton.grid(row=1, column=2, padx=2, pady=2)
-        
-
 
     def setDep(self):
         if(self.operation != "MANOVA" and self.operation != "ANOVA"):
@@ -214,8 +199,7 @@ class ChooseVariable:
         self.varList = self.setVarList()
         self.variable = ""
         self.filterVar = ""
-        # self.str=""
-        
+
         self.root = tk.Tk()
         self.root.title("Select Variables")
         self.root.geometry("500x250")
@@ -228,13 +212,12 @@ class ChooseVariable:
         self.depVarOptions = ttk.Combobox(self.root, width=20)
         self.depVarOptions.set("Choose a Filter Variable")
         self.submitButton2 = tk.Button(self.root, text="Submit", command=self.setFilterVar)
+
         # self.submitButton3 = tk.Button(self.root, text="Submit", command=self.setNewFilterVar)
-
-
         # self.addNewButton = tk.Button(self.root, text="Add Filter", command=self.newFilter)
+        
         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
         self.changeButton = tk.Button(self.root, text="Change Selection", command=self.changeSelection)
-
         self.errorMessage1 = tk.Label(self.root, text="Please choose a variable to query", fg="#FF0000")
         self.errorMessage2 = tk.Label(self.root, text="Please choose a filter variable", fg="#FF0000")
         
@@ -257,7 +240,6 @@ class ChooseVariable:
             self.varOptions.grid_forget()
             self.submitButton1.grid_forget()
             tk.Label(self.root, text="Querying " + self.variable).grid(row=0, column=0, padx=2, pady=2)
-        
             depVarOptionsList = self.varList.copy()
             depVarOptionsList.insert(0,"None")
             depVarOptionsList.remove(self.variable)

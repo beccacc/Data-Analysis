@@ -9,9 +9,6 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 from model.PerformOperation import PerformAnalysis, PerformOperation
 
-
-
-
 def main():
     fileUpload = FileUpload()
     chooseUsage = ChooseUsage()
@@ -27,12 +24,7 @@ def main():
         chooseVariable = ChooseVariable(selectFile)
         operation = SingleFileOperations(chooseVariable, selectFile)
         performOperation = PerformOperation(operation)
-        # ops = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
         displayResults = DisplayResultsOne(performOperation)
-    
-
-
-
 
 if __name__ == '__main__':
     main()

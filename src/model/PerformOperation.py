@@ -3,7 +3,6 @@ import numpy as np
 import scipy.stats as stats
 from statsmodels.multivariate.manova import MANOVA
 from sklearn import linear_model as lm
-# from sklearn.metrics import classification_report, confusion_matrix
 
 class PerformAnalysis:
     def __init__(self, chooseVariables, operation):
@@ -52,8 +51,6 @@ class PerformAnalysis:
         dof = dofNum / dofDenom
         pVal = stats.t.sf(abs(tVal), dof)
         self.results = [self.operation, self.indVar, self.depVar, pVal, self.confidence]
-
-
 
     def ANOVA(self):
         independent = self.data.loc[:, self.indVar]
@@ -168,7 +165,6 @@ class PerformOperation:
             self.df.dropna()
         self.performFilter()
 
-
     def performFilter(self):
         if(self.filterVarName=="None"):
             self.performOperation(self.df[self.varName])
@@ -204,11 +200,8 @@ class PerformOperation:
                         filtered.append(self.variable[i])
             self.performOperation(filtered)
 
-
     def performOperation(self, filtered):
-        # print(filtered)
         data = filtered
-        print(type(data))
         if(self.operation=="MAX"):
             max=data[0]
             for i in range(len(data)):

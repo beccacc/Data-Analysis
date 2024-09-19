@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 
-
-
 class FileUpload:
     def __init__(self):
         self.fileList = []
@@ -15,7 +13,6 @@ class FileUpload:
         self.uploadButton.grid(row=0, column=0, pady=2)
         self.fileLabel = tk.Label(self.root, text = "Files uploaded:")
         self.fileLabel.grid(row=1, column=0, pady=2)
-        # print("created uploadButton")
         self.completeButton = tk.Button(self.root, text="Complete Upload", command=self.completeUpload)
         self.errorMessage1 = tk.Label(self.root, text="File already exists\n Please choose a new file or complete upload", bg="#FF0000", fg="#FFFFFF")
         self.errorMessage2 = tk.Label(self.root, text="File already exists under another name\n Please choose a new file or complete upload", bg="#FF0000", fg="#FFFFFF")
@@ -42,13 +39,10 @@ class FileUpload:
                 self.fileList.append(file)
                 label = tk.Label(self.root, text = file[0])
                 label.grid(row=len(self.fileList)+1, column=0, pady=2)
-            # label.grid(row=len(self.fileList), column=0, padx=10, pady=10)
-            # label.pack(side=tk.LEFT, pady=10)
         if(len(self.fileList) > 0):
             self.completeButton.grid(row=0, column=2, pady=5)
 
     def completeUpload(self):
-        print("complete button pressed")
         self.root.destroy()
 
     def getFileList(self):
@@ -107,7 +101,6 @@ class FileUpload:
         self.submitButton.grid(row=len(self.fileList)+4, column=1, padx=2, pady=2)
         #enable upload/complete buttons after error is addressed
 
-    
     def changeFileName(self):
         txt = self.textBox.get("1.0",tk.END)
         filePath = self.currentFile[1]
@@ -120,7 +113,6 @@ class FileUpload:
         self.textBox.grid_forget()
         self.submitButton.grid_forget()
         self.resetDisplay()
-
 
     def replaceFile(self):
         self.fileList.remove(self.existingFile)

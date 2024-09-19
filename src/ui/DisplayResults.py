@@ -1,7 +1,5 @@
 import tkinter as tk
 
-
-
 class DisplayResultsMulti:
     def __init__(self, performOperation):
         self.results = performOperation.getResults()
@@ -18,10 +16,8 @@ class DisplayResultsMulti:
         self.operationLabel.grid(row=0, column=0, pady=2)
         self.explainResultsButton = tk.Button(self.root, text="Explain Results", command=self.explainResults)
         self.display()
-
         self.root.mainloop()
     
-
     def display(self):
         if(self.operation == "Multiple Regression"):
             pVals = self.results[3]
@@ -78,7 +74,6 @@ class DisplayResultsMulti:
             depVarLabel.grid(row=2, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda c=corr: self.correlation(c))
             viewButton.grid(row = 4, column=0, pady=2)
-            # self.correlation(corr)
     
     def multiReg(self, pVals):
         for w in self.root.winfo_children():
@@ -119,8 +114,6 @@ class DisplayResultsMulti:
                w.grid_forget()
         nullLabel = tk.Label(self.root, text="Null Hypothesis: Average " + self.indVar + " is the same as average " + self.depVar)
         nullLabel.grid(row=6, column=0, pady=2)
-        print(type(pVal))
-        print(type(conf))
         if(pVal<conf):
             label = tk.Label(self.root, text = "Reject Null Hypothesis: there is a significant difference between average " + self.indVar + " and average " + self.depVar)
             self.txt = "Because our pValue(" + str(pVal) + ") is less than our confidence(" + str(conf) + "), we reject our Null Hypothesis.\n"
@@ -156,7 +149,6 @@ class DisplayResultsMulti:
             self.txt = self.txt + "However, there is not enough information to prove that the averages are equal for given " + self.indVar
         label.grid(row = len(self.indVar) + 8, column = 0, pady=2)
         self.explainResultsButton.grid(row = len(self.indVar) + 9, column = 0, pady=2)
-        # print("ANOVA")
     
     def correlation(self, corr):
         for w in self.root.winfo_children():
@@ -164,7 +156,6 @@ class DisplayResultsMulti:
                w.grid_forget()
         label = tk.Label(self.root, text = "The Pearson correlation coefficient for " + self.indVar + " and " + self.depVar + " is " + str(corr))
         label.grid(row = 6, column=0, pady=2)
-
 
     def explainResults(self):
         for w in self.root.winfo_children():
@@ -187,16 +178,13 @@ class DisplayResultsMulti:
 class DisplayResultsOne:
     def __init__(self, performOperation):
         self.results = performOperation.getResults()
-        
         self.operation = performOperation.getOperation()
         self.filter = performOperation.getFilter()
         self.filterValue = performOperation.getFilterValue()
-
         self.varName = performOperation.getVarName()
         self.filterVarName = performOperation.getFilterVarName()
         self.variable = performOperation.getVarData()
         self.filterVariable = performOperation.getFilterData()
-
 
         self.root = tk.Tk()
         self.root.geometry("1000x1000")
@@ -208,8 +196,6 @@ class DisplayResultsOne:
         self.viewButton.grid(row = 1, column=0, pady=2)
 
         self.root.mainloop()
-
-    
 
     def showResults(self):
         self.operationLabel.grid_forget()

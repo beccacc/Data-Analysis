@@ -27,8 +27,6 @@ class MultiFileOperations:
         self.errorMessage2 = tk.Label(self.root, text="Please select a confidence level", fg="#FF0000")
         self.root.mainloop()
 
-
-    
     def retrieveOperation(self):
         if(self.operationOptions.get()=="Choose an Operation"):
             self.errorMessage1.grid(row=2, column=0, padx=2, pady=2)
@@ -66,7 +64,6 @@ class MultiFileOperations:
         self.operationOptions.grid(row=0, column=0, padx=2, pady=2)
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
         
-
     def completeSelection(self):
         self.root.destroy()
 
@@ -97,7 +94,6 @@ class SingleFileOperations:
         self.whereNum = [">", ">=", "=", "<=", "<", "!="]
         self.whereCat = ["=", "!="]
 
-        # print("operations.__init__() operation combobox")
         if(self.filterVarName=="None"):
             self.numOperations.remove("SELECT")
             self.catOperations.remove("SELECT")
@@ -107,7 +103,6 @@ class SingleFileOperations:
             self.operationOps = ttk.Combobox(self.root, values=self.numOperations)
         self.operationOps.set("Choose a Query")
         
-        # print("operations.__init__() submit buttons")
         self.submitButton1 = tk.Button(self.root, text="Submit", command=self.submit1)
         self.submitButton2 = tk.Button(self.root, text="Submit", command=self.submit2)
         self.submitButton3 = tk.Button(self.root, text="Submit", command=self.submit3)
@@ -131,21 +126,14 @@ class SingleFileOperations:
             self.filterOperations.set("Choose a Filter")
         else:
             self.queryVarLabel = tk.Label(self.root, text = self.varName)
-
-        # print("operations.__init__() complete button")
         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.complete)
-        # print("operations.__init__() calling display")
         self.display()
-        # print("operations.__init__() called display")
 
     def display(self):
-        # print("operations.display()")
         self.operationOps.grid(row=0, column=0, padx=2, pady=2)
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
         self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
         self.root.mainloop()
-
-
 
     def submit1(self):
         if(self.operationOps.get()=="Choose a Query"):
@@ -153,18 +141,15 @@ class SingleFileOperations:
         else:
             self.errorMessage1.grid_forget()
             self.operation = self.operationOps.get()
-            # print("*****OPERATION: " + self.operation + " in operations.submit1()")
             self.operationOps.grid_forget()
             self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
             self.submitButton1.grid_forget()
-            
             if(self.filterVarName == "None"):
                 self.root.destroy()
             else:
                 self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
                 self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
             
-    
     def submit2(self):
         if(self.filterOperations.get()=="Choose a Filter"):
             self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
@@ -202,9 +187,6 @@ class SingleFileOperations:
                 self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
                 self.completeButton.grid(row=2, column=0, padx=2, pady=2)
 
-        
-
-    
     def complete(self):
         self.root.destroy()
         

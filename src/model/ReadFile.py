@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 class ReadFile:
     def __init__(self, selectFiles):
         self.varList = []
@@ -8,7 +7,6 @@ class ReadFile:
         self.files = selectFiles.getSelection()
         self.readCSVFile(self, self.files)
     
-
     def readCSVFile(self, file):
         filePath = file[1]
         self.data = pd.read_csv(filePath)
