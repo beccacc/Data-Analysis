@@ -32,7 +32,7 @@ class PerformAnalysis:
             #TODO:
             self.MANOVA()
         else:
-            self.correlation()
+            print("*****ERROR: NO VALID OPERATION*****")
         
     def TTest(self):
         independent = self.data.loc[:,self.indVar]
@@ -127,17 +127,17 @@ class PerformAnalysis:
         #     outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
         # print(outputString)
 
-    def correlation(self):
-        independent = self.data.loc[:,self.indVar]
-        dependent = self.data.loc[:, self.depVar]
-        if(len(independent) > len(dependent)):
-            extra = len(independent) - len(dependent)
-            independent.drop(independent.tail(extra).index, inplace = True)
-        else:
-            extra = len(dependent) - len(independent)
-            dependent.drop(dependent.tail(extra).index, inplace = True)
-        corr = stats.pearsonr(independent, dependent).statistic
-        self.results = [self.operation, self.indVar, self.depVar, corr]
+    # def correlation(self):
+    #     independent = self.data.loc[:,self.indVar]
+    #     dependent = self.data.loc[:, self.depVar]
+    #     if(len(independent) > len(dependent)):
+    #         extra = len(independent) - len(dependent)
+    #         independent.drop(independent.tail(extra).index, inplace = True)
+    #     else:
+    #         extra = len(dependent) - len(independent)
+    #         dependent.drop(dependent.tail(extra).index, inplace = True)
+    #     corr = stats.pearsonr(independent, dependent).statistic
+    #     self.results = [self.operation, self.indVar, self.depVar, corr]
     
     def getResults(self):
         return self.results

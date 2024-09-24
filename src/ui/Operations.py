@@ -9,7 +9,7 @@ class MultiFileOperations:
         self.root.geometry("400x250")
         self.root.title("Choose an Operation")
         self.ops = ["Simple Regression", "Logistic Regression", "Multiple Regression", "One-Tail T-Test",
-                    "Two-Tail T-Test", "ANOVA", "MANOVA", "Correlation"]
+                    "Two-Tail T-Test", "ANOVA", "MANOVA"]
         self.operationOptions = ttk.Combobox(self.root, values=self.ops)
         self.operationOptions.set("Choose an Operation")
         self.operationOptions.grid(row=0, column=0, padx=2, pady=2)
@@ -75,11 +75,9 @@ class MultiFileOperations:
 
 class SingleFileOperations:
     def __init__(self, chooseVariables, selectFile):
-        # print("operations.__init__() root")
         self.root = tk.Tk()
         self.root.geometry("400x250")
         self.root.title("Choose an Operation")
-        # print("operations.__init__() setting variables")
         self.varName = chooseVariables.getVar()
         self.filterVarName = chooseVariables.getFilterVar()
         self.file = selectFile.getFile()
@@ -184,7 +182,7 @@ class SingleFileOperations:
                 self.filterValues.grid_forget()
                 self.submitButton3.grid_forget()
                 self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
-                self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
+                # self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
                 self.completeButton.grid(row=2, column=0, padx=2, pady=2)
 
     def complete(self):

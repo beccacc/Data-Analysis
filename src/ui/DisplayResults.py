@@ -3,8 +3,6 @@ import tkinter as tk
 class DisplayResultsMulti:
     def __init__(self, performOperation):
         self.results = performOperation.getResults()
-        print("  ********RESULTS******: ")
-        print(self.results)
         self.str = ""
         self.operation = self.results[0]
         self.indVar = self.results[1]
@@ -67,13 +65,14 @@ class DisplayResultsMulti:
             viewButton.grid(row = len(self.depVar) + 4, column=0, pady=2)
         # elif(self.operation == "MANOVA"):
         else:
-            corr = self.results[3]
-            indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
-            indVarLabel.grid(row=1, column=0, pady=2)
-            depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
-            depVarLabel.grid(row=2, column=0, pady=2)
-            viewButton = tk.Button(self.root, text = "View Results", command=lambda c=corr: self.correlation(c))
-            viewButton.grid(row = 4, column=0, pady=2)
+            print("*****ERROR: NO VALID OPERATION*****")
+            # corr = self.results[3]
+            # indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
+            # indVarLabel.grid(row=1, column=0, pady=2)
+            # depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
+            # depVarLabel.grid(row=2, column=0, pady=2)
+            # viewButton = tk.Button(self.root, text = "View Results", command=lambda c=corr: self.correlation(c))
+            # viewButton.grid(row = 4, column=0, pady=2)
     
     def multiReg(self, pVals):
         for w in self.root.winfo_children():
@@ -150,12 +149,12 @@ class DisplayResultsMulti:
         label.grid(row = len(self.indVar) + 8, column = 0, pady=2)
         self.explainResultsButton.grid(row = len(self.indVar) + 9, column = 0, pady=2)
     
-    def correlation(self, corr):
-        for w in self.root.winfo_children():
-            if isinstance(w, tk.Button):
-               w.grid_forget()
-        label = tk.Label(self.root, text = "The Pearson correlation coefficient for " + self.indVar + " and " + self.depVar + " is " + str(corr))
-        label.grid(row = 6, column=0, pady=2)
+    # def correlation(self, corr):
+    #     for w in self.root.winfo_children():
+    #         if isinstance(w, tk.Button):
+    #            w.grid_forget()
+    #     label = tk.Label(self.root, text = "The Pearson correlation coefficient for " + self.indVar + " and " + self.depVar + " is " + str(corr))
+    #     label.grid(row = 6, column=0, pady=2)
 
     def explainResults(self):
         for w in self.root.winfo_children():

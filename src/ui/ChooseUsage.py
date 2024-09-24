@@ -6,18 +6,18 @@ class ChooseUsage:
         self.root = tk.Tk()
         self.root.geometry("400x250")
         self.root.title("Choose Usage")
-        self.oneFileButton = tk.Button(self.root, text="Data Analysis on a Single File", command=self.oneFile)
+        self.oneFileButton = tk.Button(self.root, text="Querying Data", command=self.queryData)
         self.oneFileButton.grid(row=0, column=0, pady=2)
-        self.multiFileButton = tk.Button(self.root, text = "Data Analysis on Multiple Files", command=self.multiFile)
+        self.multiFileButton = tk.Button(self.root, text = "Data Analysis", command=self.dataAnalysis)
         self.multiFileButton.grid(row=1, column=0, pady=2)
         self.root.mainloop()
 
-    def oneFile(self):
-        self.usage = "oneFile"
+    def queryData(self):
+        self.usage = "queryData"
         self.root.destroy()
     
-    def multiFile(self):
-        self.usage = "multiFile"
+    def dataAnalysis(self):
+        self.usage = "dataAnalysis"
         self.root.destroy()
     
     def getUsage(self):

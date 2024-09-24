@@ -8,7 +8,6 @@ class SelectFiles:
         self.selectedFiles = []
         self.fileUpload = fileUpload
         self.fileList = self.fileUpload.getFileList()
-        print("fileUpload in SelectFiles")
         self.root = tk.Tk()
         self.root.title("Select your Files")
         self.root.geometry("400x250")
@@ -29,9 +28,7 @@ class SelectFiles:
     def addToSelectedFiles(self, file):
         if file not in self.selectedFiles:
             self.selectedFiles.append(file)
-            print(f"Added {file[0]} to selected files.")
         else:
-            print(f"{file[0]} is already in the list.")
             self.selectedFiles.remove(file)
 
     def completeSelection(self):

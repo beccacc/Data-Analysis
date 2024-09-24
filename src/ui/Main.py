@@ -12,7 +12,7 @@ from model.PerformOperation import PerformAnalysis, PerformOperation
 def main():
     fileUpload = FileUpload()
     chooseUsage = ChooseUsage()
-    if(chooseUsage.getUsage()=="multiFile"):
+    if(chooseUsage.getUsage()=="dataAnalysis"):
         selectFiles = SelectFiles(fileUpload)
         operation = MultiFileOperations()
         chooseVariables = ChooseVariables(selectFiles, operation)
