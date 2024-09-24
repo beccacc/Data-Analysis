@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
-from statsmodels.multivariate.manova import MANOVA
 from sklearn import linear_model as lm
 
 class PerformAnalysis:
@@ -10,7 +9,7 @@ class PerformAnalysis:
         self.depVar = chooseVariables.getDepVar()
         self.operation = operation.getOperation()
         self.data = chooseVariables.getDataset()
-        if(self.operation == "One-Tail T-Test" or self.operation == "ANOVA" or self.operation == "MANOVA"):
+        if(self.operation == "One-Tail T-Test" or self.operation == "ANOVA"):
             self.confidence = operation.getConfidence()
         if(self.operation == "Two-Tail T-Test"):
             self.confidence = operation.getConfidence()*2
@@ -28,9 +27,6 @@ class PerformAnalysis:
             self.TTest()
         elif(self.operation == "ANOVA"):
             self.ANOVA()
-        elif(self.operation == "MANOVA"):
-            #TODO:
-            self.MANOVA()
         else:
             print("*****ERROR: NO VALID OPERATION*****")
         
@@ -78,20 +74,6 @@ class PerformAnalysis:
         fVal = MSB/MSE
         fCrit = stats.f.ppf(float(self.confidence), df1, df2)
         self.results = [self.operation, self.indVar, self.depVar, fVal, fCrit]
-
-    # def MANOVA(self):
-    #     independents = pd.DataFrame(self.data.loc[:, self.indVar[0]])
-    #     for i in range(len(self.indVar)):
-    #         if(i!=0):
-    #             data = pd.DataFrame(self.data.loc[:, self.indVar[i]])
-    #             independents = independents.join(data, how = "inner")
-    #     dependents = pd.DataFrame(self.data.loc[:, self.depVar[0]])
-    #     for i in range(len(self.depVar)):
-    #         if(i!=0):
-    #             data = pd.DataFrame(self.data.loc[:, self.depVar[i]])
-    #             dependents = dependents.join(data, how = "inner")
-    #     manova = MANOVA(endog=independents, exog=dependents).fit()
-    #     result = manova.mv_test()
 
     def logReg(self):
         #TODO: FIGURE OUT OUTPUT OF .COEF_

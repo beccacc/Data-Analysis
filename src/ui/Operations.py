@@ -9,7 +9,7 @@ class MultiFileOperations:
         self.root.geometry("400x250")
         self.root.title("Choose an Operation")
         self.ops = ["Simple Regression", "Logistic Regression", "Multiple Regression", "One-Tail T-Test",
-                    "Two-Tail T-Test", "ANOVA", "MANOVA"]
+                    "Two-Tail T-Test", "ANOVA"]
         self.operationOptions = ttk.Combobox(self.root, values=self.ops)
         self.operationOptions.set("Choose an Operation")
         self.operationOptions.grid(row=0, column=0, padx=2, pady=2)
@@ -36,7 +36,7 @@ class MultiFileOperations:
             self.operationOptions.grid_forget()
             self.submitButton1.grid_forget()
             tk.Label(self.root, text="Selected Operation: " + self.operation).grid(row=0, column=0, padx=2, pady=2)
-            confOps = ["One-Tail T-Test", "Two-Tail T-Test", "ANOVA", "MANOVA"]
+            confOps = ["One-Tail T-Test", "Two-Tail T-Test", "ANOVA"]
             if(self.operation in confOps):
                 self.confidenceOptions.grid(row=1, column=0, padx=2, pady=2)
                 self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
