@@ -63,16 +63,8 @@ class DisplayResultsMulti:
                 tk.Label(self.root, text=self.depVar[i]).grid(row=i+3, column=0, pady=2)
             viewButton = tk.Button(self.root, text = "View Results", command=lambda fV = fVal, fC=fCrit: self.ANOVA(fV, fC))
             viewButton.grid(row = len(self.depVar) + 4, column=0, pady=2)
-        # elif(self.operation == "MANOVA"):
         else:
             print("*****ERROR: NO VALID OPERATION*****")
-            # corr = self.results[3]
-            # indVarLabel = tk.Label(self.root, text="Independent Variable: " + self.indVar)
-            # indVarLabel.grid(row=1, column=0, pady=2)
-            # depVarLabel = tk.Label(self.root, text="Dependent Variable: " + self.depVar)
-            # depVarLabel.grid(row=2, column=0, pady=2)
-            # viewButton = tk.Button(self.root, text = "View Results", command=lambda c=corr: self.correlation(c))
-            # viewButton.grid(row = 4, column=0, pady=2)
     
     def multiReg(self, pVals):
         for w in self.root.winfo_children():

@@ -194,7 +194,7 @@ class ChooseVariable:
         self.data = self.setData()
         self.varList = self.setVarList()
         self.variable = ""
-        self.filterVar = ""
+        self.filterVars = []
 
         self.root = tk.Tk()
         self.root.title("Select Variables")
@@ -209,8 +209,8 @@ class ChooseVariable:
         self.depVarOptions.set("Choose a Filter Variable")
         self.submitButton2 = tk.Button(self.root, text="Submit", command=self.setFilterVar)
 
-        # self.submitButton3 = tk.Button(self.root, text="Submit", command=self.setNewFilterVar)
-        # self.addNewButton = tk.Button(self.root, text="Add Filter", command=self.newFilter)
+        self.submitButton3 = tk.Button(self.root, text="Submit", command=self.setNewFilterVar)
+        self.addNewButton = tk.Button(self.root, text="Add Filter", command=self.newFilter)
         
         self.completeButton = tk.Button(self.root, text="Complete Selection", command=self.completeSelection)
         self.changeButton = tk.Button(self.root, text="Change Selection", command=self.changeSelection)
@@ -248,44 +248,48 @@ class ChooseVariable:
             self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
         else:
             self.errorMessage2.grid_forget()
-            self.filterVar = self.depVarOptions.get()
+            self.filterVars.append(self.depVarOptions.get())
             self.depVarOptions.grid_forget()
             self.submitButton2.grid_forget()
-            tk.Label(self.root, text="based on " + self.filterVar).grid(row=1, column=0, padx=2, pady=2)
-            # self.addNewButton.grid(row=2, column=0, padx=2, pady=2)
+            tk.Label(self.root, text="based on " + self.filterVars[-1]).grid(row=1, column=0, padx=2, pady=2)
+            if(self.filterVars[0]!="None"):
+                self.addNewButton.grid(row=2, column=0, padx=2, pady=2)
             self.completeButton.grid(row=2, column=1, padx=2, pady=2)
             self.changeButton.grid(row=2, column=2, padx=2, pady=2)
 
-    # def newFilter(self):
-    #     for w in self.root.winfo_children():
-    #         w.grid_forget()
-    #     self.str = "Querying " + self.variable + " based on "
-    #     depVarOptionsList = self.varList.copy()
-    #     depVarOptionsList.insert(0,"None")
-    #     depVarOptionsList.remove(self.variable)
-    #     for var in self.filterVar:
-    #         self.str = self.str + var + " and "
-    #     tk.Label(self.root, text=self.str).grid(row=0, column=0, padx=2, pady=2)
-    #     self.depVarOptions['values'] = depVarOptionsList
-    #     self.depVarOptions.set("Choose a Filter Variable")
-    #     self.depVarOptions.grid(row=1, column=0, padx=2, pady=2)
-    #     self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
+    def newFilter(self):
+        for w in self.root.winfo_children():
+            w.grid_forget()
+        self.str = "Querying " + self.variable + " based on "
+        depVarOptionsList = self.varList.copy()
+        depVarOptionsList.remove(self.variable)
+        for var in self.filterVars:
+            self.str = self.str + var + " and "
+            depVarOptionsList.remove(var)
+        tk.Label(self.root, text=self.str).grid(row=0, column=0, padx=2, pady=2)
+        self.depVarOptions['values'] = depVarOptionsList
+        self.depVarOptions.set("Choose a Filter Variable")
+        self.depVarOptions.grid(row=1, column=0, padx=2, pady=2)
+        self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
     
-    # def setNewFilterVar(self):
-    #     if(self.depVarOptions.get()=="Choose New Filter Variable"):
-    #         self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
-    #     else:
-    #         for w in self.root.winfo_children():
-    #             w.grid_forget()
-    #         self.filterVar.append(self.depVarOptions.get())
-    #         tk.Label(self.root, text= self.str + self.depVarOptions.get()).grid(row=0, column=0, padx=2, pady=2)
-    #         self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
-    #         self.completeButton.grid(row=1, column=1, padx=2, pady=2)
-    #         self.changeButton.grid(row=1, column=2, padx=2, pady=2)
+    def setNewFilterVar(self):
+        if(self.depVarOptions.get()=="Choose a Filter Variable"):
+            self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
+        else:
+            for w in self.root.winfo_children():
+                w.grid_forget()
+            self.filterVars.append(self.depVarOptions.get())
+            tk.Label(self.root, text= self.str + self.depVarOptions.get()).grid(row=0, column=0, columnspan=5, padx=2, pady=2)
+            self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
+            self.completeButton.grid(row=1, column=1, padx=2, pady=2)
+            self.changeButton.grid(row=1, column=2, padx=2, pady=2)
 
     def changeSelection(self):
         for w in self.root.winfo_children():
             w.grid_forget()
+        self.filterVars=[]
+        self.varOptions.set("Choose a Variable to Query")
+        self.depVarOptions.set("Choose a Filter Variable")
         self.varOptions.grid(row=0, column=0, padx=2, pady=2)
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
     
@@ -296,7 +300,7 @@ class ChooseVariable:
         return self.variable
 
     def getFilterVar(self):
-        return self.filterVar
+        return self.filterVars
 
     def getData(self):
         return self.data

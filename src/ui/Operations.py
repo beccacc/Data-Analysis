@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import numpy as np
+import pandas as pd
 
 class MultiFileOperations:
     def __init__(self):
@@ -79,20 +80,29 @@ class SingleFileOperations:
         self.root.geometry("400x250")
         self.root.title("Choose an Operation")
         self.varName = chooseVariables.getVar()
-        self.filterVarName = chooseVariables.getFilterVar()
+        self.filterVarNames = chooseVariables.getFilterVar()
         self.file = selectFile.getFile()
         self.data = chooseVariables.getData()
         self.varData = self.data[self.varName]
 
-        if(self.filterVarName != "None"):
-            self.filterData = self.data[self.filterVarName]
+        self.operation = ""
+        self.filters = []
+        self.filterVals = []
+
+        if(self.filterVarNames[0] != "None"):
+            self.df = pd.DataFrame()
+            for filter in self.filterVarNames:
+                d = pd.DataFrame(data = self.data[filter], columns=[filter])
+            # for i in range(len(self.filterVarNames)):
+            #     d = pd.DataFrame(data=self.data.loc[i], column=self.filterVarNames[i])
+                pd.concat([self.df, d], axis=1, join="inner")
 
         self.numOperations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
         self.catOperations = ["MODE", "SELECT"]
         self.whereNum = [">", ">=", "=", "<=", "<", "!="]
         self.whereCat = ["=", "!="]
 
-        if(self.filterVarName=="None"):
+        if(self.filterVarNames[0]=="None"):
             self.numOperations.remove("SELECT")
             self.catOperations.remove("SELECT")
         if(isinstance(self.varData, str)):
@@ -110,17 +120,16 @@ class SingleFileOperations:
         self.errorMessage3 = tk.Label(self.root, text="Please select a filter value", fg="#FF0000")
         self.errorMessage4 = tk.Label(self.root, text="Please input a number", fg="#FF0000")
         
-        if(self.filterVarName != "None"):
-            self.queryVarLabel = tk.Label(self.root, text = self.varName + " WHERE " + self.filterVarName)
+        if(self.filterVarNames != "None"):
+            self.queryVarLabel = tk.Label(self.root, text = self.operation + " " + self.varName + " WHERE " + self.filterVarNames[0])
+            self.catFilterValues = ttk.Combobox(self.root, values=[])
+            self.catFilterValues.set("Choose a Value")
+            self.numFilterValues = tk.Text(self.root, height = 1, width = 5)
+            self.numFilterValues.insert(tk.END, "Input a Value")
             if isinstance(self.varData.iloc[1], str):
                 self.filterOperations = ttk.Combobox(self.root, values=self.whereCat)
-                self.filterValueOptions = set(self.filterData)
-                self.filterValues = ttk.Combobox(self.root, values=self.filterValueOptions)
-                self.filterValues.set("Choose a Value")
             else:
                 self.filterOperations = ttk.Combobox(self.root, values=self.whereNum)
-                self.filterValues = tk.Text(self.root, height = 1, width = 5)
-                self.filterValues.insert(tk.END, "Input a Value")
             self.filterOperations.set("Choose a Filter")
         else:
             self.queryVarLabel = tk.Label(self.root, text = self.varName)
@@ -128,9 +137,13 @@ class SingleFileOperations:
         self.display()
 
     def display(self):
+        print("*****OPERATION OPS GRID BEFORE******")
         self.operationOps.grid(row=0, column=0, padx=2, pady=2)
+        print("*****OPERATION OPS GRID AFTER******")
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
+        print("*****SUBMIT 1 AFTER******")
         self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
+        print("*****QUERY VAR LABEL AFTER******")
         self.root.mainloop()
 
     def submit1(self):
@@ -139,51 +152,83 @@ class SingleFileOperations:
         else:
             self.errorMessage1.grid_forget()
             self.operation = self.operationOps.get()
+            self.queryVarLabel['text'] = self.operation + " " + self.queryVarLabel['text']
+            self.queryVarLabel.grid_forget()
+            self.queryVarLabel.grid(row=0, column=0, padx=0, pady=0)
             self.operationOps.grid_forget()
-            self.queryVarLabel.grid(row=0, column=0, padx=2, pady=2)
             self.submitButton1.grid_forget()
-            if(self.filterVarName == "None"):
+            if(self.filterVarNames[0] == "None"):
                 self.root.destroy()
             else:
                 self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
-                self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
+                if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                    self.filterOperations['values'] = self.whereNum
+                else:
+                    self.filterOperations['values'] = self.whereCat
+                self.submitButton2.grid(row=2, column=0, padx=2, pady=2)         
             
     def submit2(self):
         if(self.filterOperations.get()=="Choose a Filter"):
             self.errorMessage2.grid(row=3, column=0, padx=2, pady=2)
         else:
             self.errorMessage2.grid_forget()
-            self.filter = self.filterOperations.get()
+            self.filters.append(self.filterOperations.get())
             self.filterOperations.grid_forget()
-            self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " +  self.filter
+            self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  self.filters[-1]
             self.submitButton2.grid_forget()
-            self.filterValues.grid(row=1, column=0, padx=2, pady=2)
+            currentFilterVar = self.filterVarNames[len(self.filters)-1]
+            if isinstance(self.df.loc[currentFilterVar][0], str):
+                self.catFilterValues['values'] = set(self.df.loc[currentFilterVar])
+                self.catFilterValues.set("Choose a Value")
+                self.catFilterValues.grid(row=1, column=0, padx=2, pady=2)
+            else:
+                self.numFilterValues.insert(tk.END, "Input a Value")
+                self.numFilterValues.grid(row=1, column=0, padx=2, pady=2)
             self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
 
     def submit3(self):
-        if isinstance(self.varData.iloc[1], (int, float, np.integer)):
-            self.filterValue = self.filterValues.get("1.0",tk.END)
+        if isinstance(self.df.loc[self.filterVarNames[len(self.filters)-1]][0], (int, float, np.integer)):
+            self.numFilterValues.get("1.0",tk.END)
             try:
-                self.filterValue = int(self.filterValue)
+                self.filterVals.append(int(self.filterVals))
             except:
-                self.filterValues.insert(tk.END, "Input a Value")
+                self.numFilterValues.insert(tk.END, "Input a Value")
                 self.errorMessage4.grid(row=3, column=0, padx=2, pady=2)
             self.errorMessage4.grid_forget()
-            self.filterValues.grid_forget()
+            self.numFilterValues.grid_forget()
+            self.catFilterValues.grid_forget()
             self.submitButton3.grid_forget()
-            self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
-            self.completeButton.grid(row=1, column=0, padx=2, pady=2)
+            if(len(self.filters)!= len(self.filterVarNames)):
+                self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals) + " and " + self.filterVarNames[len(self.filters)]
+                if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                    self.filterOperations['values'] = self.whereNum
+                else:
+                    self.filterOperations['values'] = self.whereCat
+                self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
+                self.submitButton1.grid(row=2, column=0, padx=2, pady=2)
+            else:
+                self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals)
+                self.completeButton.grid(row=2, column=0, padx=2, pady=2)
         else:
-            if(self.filterValues.get()=="Choose a Value"):
+            if(self.catFilterValues.get()=="Choose a Value"):
                 self.errorMessage3.grid(row=4, column=0, padx=2, pady=2)
             else:
-                self.filterValue = self.filterValues.get()
+                self.filterVals.append(self.catFilterValues.get())
                 self.errorMessage3.grid_forget()
-                self.filterValues.grid_forget()
+                self.numFilterValues.grid_forget()
+                self.catFilterValues.grid_forget()
                 self.submitButton3.grid_forget()
-                self.queryVarLabel['text'] = self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " +  str(self.filterValue)
-                # self.addNewButton.grid(row=1, column=0, padx=2, pady=2)
-                self.completeButton.grid(row=2, column=0, padx=2, pady=2)
+                if(len(self.filters)!= len(self.filterVarNames)):
+                    self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals) + " and "
+                    if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                        self.filterOperations['values'] = self.whereNum
+                    else:
+                        self.filterOperations['values'] = self.whereCat
+                    self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
+                    self.submitButton1.grid(row=2, column=0, padx=2, pady=2)
+                else:
+                    self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals)
+                    self.completeButton.grid(row=2, column=0, padx=2, pady=2)
 
     def complete(self):
         self.root.destroy()
@@ -192,17 +237,17 @@ class SingleFileOperations:
         return self.operation
 
     def getFilter(self):
-        if(self.filterVarName != "None"):
-            return self.filter
+        if(self.filterVarNames != "None"):
+            return self.filters
         return ""
     
     def getFilterValue(self):
-        if(self.filterVarName != "None"):
-            return self.filterValue
+        if(self.filterVarNames != "None"):
+            return self.filterVals
         return ""
 
     def getFilterData(self):
-        if(self.filterVarName != "None"):
+        if(self.filterVarNames != "None"):
             return self.filterData
         return ""
     
@@ -213,11 +258,16 @@ class SingleFileOperations:
         return self.varName
     
     def getFilterVarName(self):
-        return self.filterVarName
+        return self.filterVarNames
 
     def getString(self):
-        if(self.filterVarName != "None"):
-            text = self.operation + " " + self.varName + " WHERE " + self.filterVarName + " " + self.filter + " " + str(self.filterValue)
-        else:
+        if(self.filterVarNames == "None"):
             text = self.operation + " " + self.varName
+        else:
+            text = self.operation + " " + self.varName + " WHERE "
+            for i in range(len(self.filterVarNames)):
+                if(self.filterVarNames[i]!= self.filterVarNames[-1]):
+                    text = text + self.filterVarNames[i] + " " + self.filters[i] + " " + str(self.filterVals[i]) + " and "
+                else:
+                    text = text + self.filterVarNames[i] + " " + self.filters[i] + " " + str(self.filterVals[i])
         return text
