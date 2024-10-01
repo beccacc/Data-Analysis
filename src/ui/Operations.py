@@ -90,12 +90,11 @@ class SingleFileOperations:
         self.filterVals = []
 
         if(self.filterVarNames[0] != "None"):
-            self.df = pd.DataFrame()
-            for filter in self.filterVarNames:
-                d = pd.DataFrame(data = self.data[filter], columns=[filter])
-            # for i in range(len(self.filterVarNames)):
-            #     d = pd.DataFrame(data=self.data.loc[i], column=self.filterVarNames[i])
-                pd.concat([self.df, d], axis=1, join="inner")
+            self.df = pd.DataFrame(data=self.data[self.filterVarNames[0]], columns=[self.filterVarNames[0]])
+            for i in range(len(self.filterVarNames)):
+                if(i!=0):
+                    d = pd.DataFrame(data = self.data[self.filterVarNames[i]], columns=[self.filterVarNames[i]])
+                    self.df = self.df.join(d, on=None)
 
         self.numOperations = ["MAX", "MIN", "MEAN", "MEDIAN", "MODE", "STDev", "SELECT"]
         self.catOperations = ["MODE", "SELECT"]
@@ -137,13 +136,9 @@ class SingleFileOperations:
         self.display()
 
     def display(self):
-        print("*****OPERATION OPS GRID BEFORE******")
         self.operationOps.grid(row=0, column=0, padx=2, pady=2)
-        print("*****OPERATION OPS GRID AFTER******")
         self.submitButton1.grid(row=1, column=0, padx=2, pady=2)
-        print("*****SUBMIT 1 AFTER******")
         self.queryVarLabel.grid(row=0, column=1, padx=2, pady=2)
-        print("*****QUERY VAR LABEL AFTER******")
         self.root.mainloop()
 
     def submit1(self):
@@ -161,7 +156,7 @@ class SingleFileOperations:
                 self.root.destroy()
             else:
                 self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
-                if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                if isinstance(self.df[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
                     self.filterOperations['values'] = self.whereNum
                 else:
                     self.filterOperations['values'] = self.whereCat
@@ -177,8 +172,8 @@ class SingleFileOperations:
             self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  self.filters[-1]
             self.submitButton2.grid_forget()
             currentFilterVar = self.filterVarNames[len(self.filters)-1]
-            if isinstance(self.df.loc[currentFilterVar][0], str):
-                self.catFilterValues['values'] = set(self.df.loc[currentFilterVar])
+            if isinstance(self.df[currentFilterVar][0], str):
+                self.catFilterValues['values'] = set(self.df[currentFilterVar])
                 self.catFilterValues.set("Choose a Value")
                 self.catFilterValues.grid(row=1, column=0, padx=2, pady=2)
             else:
@@ -187,10 +182,9 @@ class SingleFileOperations:
             self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
 
     def submit3(self):
-        if isinstance(self.df.loc[self.filterVarNames[len(self.filters)-1]][0], (int, float, np.integer)):
-            self.numFilterValues.get("1.0",tk.END)
+        if isinstance(self.df[self.filterVarNames[len(self.filters)-1]][0], (int, float, np.integer)):
             try:
-                self.filterVals.append(int(self.filterVals))
+                self.filterVals.append(int(self.numFilterValues.get("1.0",tk.END)))
             except:
                 self.numFilterValues.insert(tk.END, "Input a Value")
                 self.errorMessage4.grid(row=3, column=0, padx=2, pady=2)
@@ -200,7 +194,7 @@ class SingleFileOperations:
             self.submitButton3.grid_forget()
             if(len(self.filters)!= len(self.filterVarNames)):
                 self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals) + " and " + self.filterVarNames[len(self.filters)]
-                if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                if isinstance(self.df[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
                     self.filterOperations['values'] = self.whereNum
                 else:
                     self.filterOperations['values'] = self.whereCat
@@ -220,7 +214,7 @@ class SingleFileOperations:
                 self.submitButton3.grid_forget()
                 if(len(self.filters)!= len(self.filterVarNames)):
                     self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals) + " and "
-                    if isinstance(self.df.loc[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
+                    if isinstance(self.df[self.filterVarNames[len(self.filters)]][0], (int, float, np.integer)):
                         self.filterOperations['values'] = self.whereNum
                     else:
                         self.filterOperations['values'] = self.whereCat
