@@ -199,7 +199,7 @@ class SingleFileOperations:
                 else:
                     self.filterOperations['values'] = self.whereCat
                 self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
-                self.submitButton1.grid(row=2, column=0, padx=2, pady=2)
+                self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
             else:
                 self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals)
                 self.completeButton.grid(row=2, column=0, padx=2, pady=2)
@@ -218,8 +218,9 @@ class SingleFileOperations:
                         self.filterOperations['values'] = self.whereNum
                     else:
                         self.filterOperations['values'] = self.whereCat
+                    self.filterOperations.set("Choose a Filter")
                     self.filterOperations.grid(row=1, column=0, padx=2, pady=2)
-                    self.submitButton1.grid(row=2, column=0, padx=2, pady=2)
+                    self.submitButton2.grid(row=2, column=0, padx=2, pady=2)
                 else:
                     self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  str(self.filterVals)
                     self.completeButton.grid(row=2, column=0, padx=2, pady=2)
@@ -230,19 +231,19 @@ class SingleFileOperations:
     def getOperation(self):
         return self.operation
 
-    def getFilter(self):
-        if(self.filterVarNames != "None"):
+    def getFilters(self):
+        if(self.filterVarNames[0] != "None"):
             return self.filters
         return ""
     
-    def getFilterValue(self):
-        if(self.filterVarNames != "None"):
+    def getFilterValues(self):
+        if(self.filterVarNames[0] != "None"):
             return self.filterVals
         return ""
 
     def getFilterData(self):
-        if(self.filterVarNames != "None"):
-            return self.filterData
+        if(self.filterVarNames[0] != "None"):
+            return self.df
         return ""
     
     def getVarData(self):
@@ -251,11 +252,11 @@ class SingleFileOperations:
     def getVarName(self):
         return self.varName
     
-    def getFilterVarName(self):
+    def getFilterVarNames(self):
         return self.filterVarNames
 
     def getString(self):
-        if(self.filterVarNames == "None"):
+        if(self.filterVarNames[0] == "None"):
             text = self.operation + " " + self.varName
         else:
             text = self.operation + " " + self.varName + " WHERE "

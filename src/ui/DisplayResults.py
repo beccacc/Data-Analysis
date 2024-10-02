@@ -170,12 +170,12 @@ class DisplayResultsOne:
     def __init__(self, performOperation):
         self.results = performOperation.getResults()
         self.operation = performOperation.getOperation()
-        self.filter = performOperation.getFilter()
-        self.filterValue = performOperation.getFilterValue()
+        self.filters = performOperation.getFilter()
+        self.filterValues = performOperation.getFilterValue()
         self.varName = performOperation.getVarName()
-        self.filterVarName = performOperation.getFilterVarName()
+        self.filterVarNames = performOperation.getFilterVarName()
         self.variable = performOperation.getVarData()
-        self.filterVariable = performOperation.getFilterData()
+        self.filterData = performOperation.getFilterData()
 
         self.root = tk.Tk()
         self.root.geometry("1000x1000")
@@ -193,12 +193,16 @@ class DisplayResultsOne:
         self.viewButton.grid_forget()
         if(self.operation!="SELECT"):
             txt="The " + self.operation + " value of " + self.varName
-            if(self.filterVarName!="None"):
-                 txt = txt + " where " + self.filterVarName + " " + self.filter + " " + str(self.filterValue)
+            if(self.filterVarNames!="None"):
+                txt = txt + " where "
+                for i in range(len(self.filterVarNames)):
+                    txt = txt + self.filterVarNames[i] + " " + self.filters[i] + " " + str(self.filterValues[i])
+                    if(i!=len(self.filterVarNames)-1):
+                        txt = txt + " and "
             txt = txt + " is " + str(self.results)
             tk.Label(self.root, text=txt).grid(row=0, column=0, padx=2, pady=2)
         else:
-            txt="Showing all instances of " + self.varName + " where " + self.filterVarName + " " + self.filter + " " + str(self.filterValue) + ":"
+            txt="Showing all instances of " + self.varName + " where " + self.filterVarNames + " " + self.filters + " " + str(self.filterValues) + ":"
             tk.Label(self.root, text=txt).grid(row=0, column=0, padx=2, pady=2)
             resultsList = tk.Listbox(self.root)
             for r in self.results:

@@ -105,21 +105,6 @@ class PerformAnalysis:
         multiR.fit(independents, dependent)
         pVals = multiR.coef_
         self.results = [self.operation, self.indVar, self.depVar, pVals]
-        # for i in range(len(self.indVar)):
-        #     outputString = outputString + "/n As " + self.indVar[i] + " increases by 1, " + dependent + " increases by " + pVal[i]
-        # print(outputString)
-
-    # def correlation(self):
-    #     independent = self.data.loc[:,self.indVar]
-    #     dependent = self.data.loc[:, self.depVar]
-    #     if(len(independent) > len(dependent)):
-    #         extra = len(independent) - len(dependent)
-    #         independent.drop(independent.tail(extra).index, inplace = True)
-    #     else:
-    #         extra = len(dependent) - len(independent)
-    #         dependent.drop(dependent.tail(extra).index, inplace = True)
-    #     corr = stats.pearsonr(independent, dependent).statistic
-    #     self.results = [self.operation, self.indVar, self.depVar, corr]
     
     def getResults(self):
         return self.results
@@ -128,59 +113,98 @@ class PerformOperation:
     def __init__(self, operations):
         self.operation = operations.getOperation()
         self.string = operations.getString()
-        self.filter = operations.getFilter()
+        self.filters = operations.getFilters()
         self.varName = operations.getVarName()
-        self.filterVarName = operations.getFilterVarName()
-        if(self.filterVarName!="None"):
-            self.filterValue = int(operations.getFilterValue())
+        self.filterVarNames = operations.getFilterVarNames()
+        if(self.filterVarNames[0]!="None"):
+            self.filterValues = operations.getFilterValues()
         if(self.operation == "SELECT"):
             self.results = pd.DataFrame()
         else:
             self.results = float(0.0)
 
-        self.variable = operations.getVarData()
-        self.filterVariable = operations.getFilterData()
-        if(self.filterVarName=="None"):
-            self.df = self.variable.to_frame(name=self.varName)
+        self.varData = operations.getVarData()
+        # print("***** VAR DATA TYPE:")
+        # print(type(self.varData))
+        self.filterData = operations.getFilterData()
+        if(self.filterVarNames=="None"):
+            self.df = self.varData.to_frame(name=self.varName)
         else:
-            self.df=pd.concat({self.varName: self.variable,self.filterVarName: self.filterVariable},axis=1)
+            self.df = self.filterData.copy()
+            d = pd.DataFrame(data = self.varData, columns=[self.varName])
+            self.df = self.df.join(d, on=None)
             self.df.dropna()
         self.performFilter()
 
     def performFilter(self):
-        if(self.filterVarName=="None"):
+        if(self.filterVarNames[0]=="None"):
             self.performOperation(self.df[self.varName])
-        else:
+        elif(len(self.filterVarNames)<=1):
             filtered = []
-            if(self.filter==">"):
+            data = self.filterData[0]
+            filter = self.filters[0]
+            filterValue = self.filterValues[0]
+            if(filter==">"):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] > self.filterValue):
-                        filtered.append(self.variable[i])
-            elif(self.filter==">="):
+                    if(data[i] > filterValue):
+                        filtered.append(self.varData[i])
+            elif(filter==">="):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] >= self.filterValue):
-                        filtered.append(self.variable[i])
-            elif(self.filter=="="):
+                    if(data[i] >= filterValue):
+                        filtered.append(self.varData[i])
+            elif(filter=="="):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] == self.filterValue):
-                        filtered.append(self.variable[i])
-            elif(self.filter=="<="):
+                    if(data[i] == filterValue):
+                        filtered.append(self.varData[i])
+            elif(filter=="<="):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] <= self.filterValue):
-                        filtered.append(self.variable[i])
-            elif(self.filter=="<"):
+                    if(data[i] <= filterValue):
+                        filtered.append(self.varData[i])
+            elif(filter=="<"):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] < self.filterValue):
-                        filtered.append(self.variable[i])
-            elif(self.filter==">="):
+                    if(data[i] < filterValue):
+                        filtered.append(self.varData[i])
+            elif(filter==">="):
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] >= self.filterValue):
-                        filtered.append(self.variable[i])
+                    if(data[i] >= filterValue):
+                        filtered.append(self.varData[i])
             else:
                 for i in range(len(self.df)):
-                    if(self.filterVariable[i] != self.filterValue):
-                        filtered.append(self.variable[i])
+                    if(data[i] != filterValue):
+                        filtered.append(self.varData[i])
             self.performOperation(filtered)
+        else:
+            filtered = []
+            for i in range(len(self.df)):
+                keep = True
+                for f in range(len(self.filterVarNames)):
+                    filterData = self.filterData[self.filterVarNames[f]]
+                    filter = self.filters[f]
+                    filterValue = self.filterValues[f]
+                    if(filter==">"):
+                        if(filterData[i] <= filterValue):
+                            keep = False
+                    elif(filter == ">="):
+                        if(filterData[i] < filterValue):
+                            keep = False
+                    elif(filter == "<"):
+                        if(filterData[i] >= filterValue):
+                            keep = False
+                    elif(filter == "<="):
+                        if(filterData[i] > filterValue):
+                            keep = False
+                    elif(filter == "="):
+                        if(filterData[i] == filterValue):
+                            keep = False
+                    else:
+                        if(filterData[i] != filterValue):
+                            keep = False
+                if(keep):
+                    filtered.append(self.varData[i])
+        print(filtered)
+        self.performOperation(filtered)
+                
+
 
     def performOperation(self, filtered):
         data = filtered
@@ -216,25 +240,25 @@ class PerformOperation:
         return self.operation
     
     def getFilter(self):
-        if(self.filterVarName!="None"):
-            return self.filter
+        if(self.filterVarNames!="None"):
+            return self.filters
 
     def getFilterValue(self):
-        if(self.filterVarName!="None"):
-            return self.filterValue
+        if(self.filterVarNames!="None"):
+            return self.filterValues
 
     def getVarName(self):
         return self.varName
     
     def getFilterVarName(self):
-        return self.filterVarName
+        return self.filterVarNames
 
     def getVarData(self):
-        return self.variable
+        return self.varData
     
     def getFilterData(self):
-        if(self.filterVarName!="None"):
-            return self.filterVariable
+        if(self.filterVarNames!="None"):
+            return self.filterData
     
     def getString(self):
         return self.string

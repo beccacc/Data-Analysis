@@ -18,7 +18,6 @@ def main():
         chooseVariables = ChooseVariables(selectFiles, operation)
         performOperation = PerformAnalysis(chooseVariables, operation)
         displayResults = DisplayResultsMulti(performOperation)
-        # displayResults.display()
     else:
         selectFile = SelectFile(fileUpload)
         chooseVariable = ChooseVariable(selectFile)
