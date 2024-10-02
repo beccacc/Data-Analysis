@@ -160,6 +160,7 @@ class SingleFileOperations:
                     self.filterOperations['values'] = self.whereNum
                 else:
                     self.filterOperations['values'] = self.whereCat
+                    print("*****WHERE CAT******")
                 self.submitButton2.grid(row=2, column=0, padx=2, pady=2)         
             
     def submit2(self):
@@ -172,13 +173,14 @@ class SingleFileOperations:
             self.queryVarLabel['text'] = self.queryVarLabel['text'] + " " +  self.filters[-1]
             self.submitButton2.grid_forget()
             currentFilterVar = self.filterVarNames[len(self.filters)-1]
-            if isinstance(self.df[currentFilterVar][0], str):
-                self.catFilterValues['values'] = set(self.df[currentFilterVar])
-                self.catFilterValues.set("Choose a Value")
-                self.catFilterValues.grid(row=1, column=0, padx=2, pady=2)
-            else:
+            if isinstance(self.df[currentFilterVar][0], (int, float, np.integer)):
                 self.numFilterValues.insert(tk.END, "Input a Value")
                 self.numFilterValues.grid(row=1, column=0, padx=2, pady=2)
+            else:
+                options = tuple(set(self.df[currentFilterVar]))
+                self.catFilterValues['values'] = options
+                self.catFilterValues.set("Choose a Value")
+                self.catFilterValues.grid(row=1, column=0, padx=2, pady=2)
             self.submitButton3.grid(row=2, column=0, padx=2, pady=2)
 
     def submit3(self):

@@ -124,8 +124,6 @@ class PerformOperation:
             self.results = float(0.0)
 
         self.varData = operations.getVarData()
-        # print("***** VAR DATA TYPE:")
-        # print(type(self.varData))
         self.filterData = operations.getFilterData()
         if(self.filterVarNames=="None"):
             self.df = self.varData.to_frame(name=self.varName)
@@ -201,11 +199,8 @@ class PerformOperation:
                             keep = False
                 if(keep):
                     filtered.append(self.varData[i])
-        print(filtered)
         self.performOperation(filtered)
                 
-
-
     def performOperation(self, filtered):
         data = filtered
         if(self.operation=="MAX"):
